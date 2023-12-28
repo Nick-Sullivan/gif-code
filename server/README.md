@@ -1,3 +1,5 @@
+This is
+
 ## Getting started
 
 1. Install libraries
@@ -14,16 +16,25 @@ ENVIRONMENT=dev
 GIPHY_API_KEY="INSERT KEY HERE"
 ```
 
+If you want to create a new environment, change `dev` to any unique string and follow the remaining steps.
+
 3. Initialise terraform
 
 ```bash
 ./make.ps1 init
 ```
 
-4. Run API tests
+4. Deploy terraform
+
+```bash
+cd terraform/foundation
+terraform apply
+cd ../infrastructure
+terraform apply
+```
+
+5. Run API tests
 
 ```bash
 ./make.ps1 test-api
 ```
-
-5. Run locally using VSCode -> Run
