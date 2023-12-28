@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Local server",
+        "type": "python",
+        "request": "launch",
+        "program": "lambda/local.py",
+        "console": "integratedTerminal",
+        "justMyCode": true
+      }
+    ]
+  }

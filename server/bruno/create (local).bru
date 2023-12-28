@@ -1,0 +1,21 @@
+meta {
+  name: create (local)
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:8000/gif
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "text": "This was sent from Bruno",
+    "giphy_id": "WHv84VIQYOHBibUy6K",
+    "transparency": 200,
+    "version": 6
+  }
+  
+}

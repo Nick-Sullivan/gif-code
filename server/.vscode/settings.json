@@ -1,0 +1,25 @@
+{
+    "python.analysis.extraPaths": [
+        "./lambda/",
+        "./lambda/handler",
+        "./lambda/layer/python",
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "never",
+            "source.organizeImports": "never",
+            "source.organizeImports.ruff": "explicit"
+        },
+        "editor.insertSpaces": true,
+        "editor.formatOnSave": false,
+        "editor.tabSize": 4,
+        "editor.formatOnType": false,
+        "editor.detectIndentation": false,
+    },
+    "[yml]": {
+        "editor.tabSize": 2
+    }
+}

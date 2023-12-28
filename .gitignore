@@ -14,5 +14,8 @@
 server/.venv/*
 server/lambda/libs/python/*
 
+fuckaround/*
+app/*
+
 */.env
 .env
