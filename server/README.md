@@ -1,4 +1,4 @@
-This is
+This is designed to be able to run locally (Using VSCode -> Run), or to deploy a custom environment.
 
 ## Getting started
 
@@ -16,7 +16,7 @@ ENVIRONMENT=dev
 GIPHY_API_KEY="INSERT KEY HERE"
 ```
 
-If you want to create a new environment, change `dev` to any unique string and follow the remaining steps.
+If you want to create a different environment, change `dev` to any unique string and follow the remaining steps.
 
 3. Initialise terraform
 
@@ -37,4 +37,13 @@ terraform apply
 
 ```bash
 ./make.ps1 test-api
+```
+
+6. Cleanup
+
+```bash
+cd terraform/infrastructure
+terraform destroy
+cd ../foundation
+terraform destroy
 ```
