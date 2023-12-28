@@ -20,4 +20,10 @@ GIPHY_API_KEY="INSERT KEY HERE"
 ./make.ps1 init
 ```
 
-4. Run locally using VSCode -> Run
+4. Run API tests
+
+```bash
+./make.ps1 test-api
+```
+
+5. Run locally using VSCode -> Run
