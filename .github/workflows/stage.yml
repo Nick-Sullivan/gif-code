@@ -43,7 +43,7 @@ jobs:
 
       - name: Apply terraform state (foundation)
         working-directory: server/terraform/foundation
-        run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}" -var="giphy_api_key=${{env.GIPHY_API_KEY}}"
+        run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}" -var="giphy_api_key=${{secrets.GIPHY_API_KEY}}"
 
       - name: Initialise terraform state (infrastructure)
         working-directory: server/terraform/infrastructure
