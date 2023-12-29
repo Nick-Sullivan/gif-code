@@ -8,7 +8,7 @@ env:
   IS_CICD: "true"
   ENVIRONMENT: "stage"
   TAG: "1.0.${{github.run_number}}"
-  FLUTTER_VERSION: "${{ env.TAG }}+{{github.run_number}}"
+  FLUTTER_VERSION: "1.0.${{github.run_number}}+${{github.run_number}}"
 
 permissions:
   contents: write
