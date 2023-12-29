@@ -17,46 +17,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # deploy_infrastructure:
-  #   name: "Deploy infrastructure"
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4
+  deploy_infrastructure:
+    name: "Deploy infrastructure"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
 
-  #     - name: Setup AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: "ap-southeast-2"
+      - name: Setup AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "ap-southeast-2"
 
-  #     - name: Setup terraform
-  #       uses: hashicorp/setup-terraform@v2
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v2
 
-  #     - name: Initialise terraform state (foundation)
-  #       working-directory: server/terraform/foundation
-  #       run: terraform init -backend-config "key=gif_code/${{env.ENVIRONMENT}}/foundation/terraform.tfstate"
+      - name: Initialise terraform state (foundation)
+        working-directory: server/terraform/foundation
+        run: terraform init -backend-config "key=gif_code/${{env.ENVIRONMENT}}/foundation/terraform.tfstate"
 
-  #     - name: Apply terraform state (foundation)
-  #       working-directory: server/terraform/foundation
-  #       run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}" -var="giphy_api_key=${{secrets.GIPHY_API_KEY}}"
+      - name: Apply terraform state (foundation)
+        working-directory: server/terraform/foundation
+        run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}" -var="giphy_api_key=${{secrets.GIPHY_API_KEY}}"
 
-  #     - name: Initialise terraform state (infrastructure)
-  #       working-directory: server/terraform/infrastructure
-  #       run: terraform init -backend-config "key=gif_code/${{env.ENVIRONMENT}}/infrastructure/terraform.tfstate"
+      - name: Initialise terraform state (infrastructure)
+        working-directory: server/terraform/infrastructure
+        run: terraform init -backend-config "key=gif_code/${{env.ENVIRONMENT}}/infrastructure/terraform.tfstate"
 
-  #     - name: Build libs (infrastructure)
-  #       working-directory: server/lambda/libs
-  #       run: pip install -r requirements.txt --target python
+      - name: Build libs (infrastructure)
+        working-directory: server/lambda/libs
+        run: pip install -r requirements.txt --target python
 
-  #     - name: Apply terraform state (infrastructure)
-  #       working-directory: server/terraform/infrastructure
-  #       run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
+      - name: Apply terraform state (infrastructure)
+        working-directory: server/terraform/infrastructure
+        run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
 
   # api_tests:
   #   name: "API tests"
@@ -93,7 +93,7 @@ jobs:
 
   build_app:
     name: "Build flutter app"
-    needs: [] #[deploy_infrastructure]
+    needs: [deploy_infrastructure]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -135,7 +135,7 @@ jobs:
 
       - name: Initialise terraform state (infrastructure)
         working-directory: app/qr_gif/terraform/infrastructure
-        run: terraform init -backend-config "key=gif_code/${{env.ENVIRONMENT}}/infrastructure/terraform.tfstate"
+        run: terraform init -backend-config "key=gif_code_app/${{env.ENVIRONMENT}}/infrastructure/terraform.tfstate"
 
       - name: Apply terraform state (infrastructure)
         working-directory: app/qr_gif/terraform/infrastructure
