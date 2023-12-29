@@ -112,18 +112,21 @@ jobs:
       #     token: ${{secrets.GITHUB_TOKEN}}
 
       - name: Create PR
-        run: gh pr create --base production --title "Deploy to production" --body "Automatically generated"
+        id: cpr
+        run: |
+          PR_URL=$(gh pr create --base production --title "Production deployment" --body "This was automatically generated.")
+          echo "::set-output name=pr_url::$PR_URL"
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PR_TOKEN }}
 
-      # - name: Approve PR
-      #   run: gh pr review --approve "$PR_URL"
-      #   env:
-      #     PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
-      #     GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
+      - name: Approve PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ steps.cpr.outputs.pr_url }}
+          GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
 
-      # - name: Mark PR to auto-merge when ready
-      #   run: gh pr merge --auto --merge "$PR_URL"
-      #   env:
-      #     PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
-      #     GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
+      - name: Mark PR to auto-merge when ready
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ steps.cpr.outputs.pr_url }}
+          GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
