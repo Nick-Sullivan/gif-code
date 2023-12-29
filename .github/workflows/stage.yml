@@ -106,19 +106,25 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
-          base: stage
-          branch: production
+          base: production
+          branch: stage
           title: "Deploy to production"
-          token: ${{secrets.AUTOMERGE_PR_TOKEN}}
+          token: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Approve PR
-        run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
-          GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
+      # - name: Create PR
+      #   run: gh pr create --base production --branch stage --title "Deploy to production" --approve "$PR_URL"
+      #   env:
+      #     PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+      #     GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
 
-      - name: Mark PR to auto-merge when ready
-        run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
-          GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
+      # - name: Approve PR
+      #   run: gh pr review --approve "$PR_URL"
+      #   env:
+      #     PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+      #     GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
+
+      # - name: Mark PR to auto-merge when ready
+      #   run: gh pr merge --auto --merge "$PR_URL"
+      #   env:
+      #     PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+      #     GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
