@@ -141,6 +141,20 @@ jobs:
         working-directory: app/qr_gif/terraform/infrastructure
         run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
 
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.GOOGLE_PLAY_KEYSTORE_BASE64 }}
+
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > app/qr_gif/android/key.properties
+          echo "storePassword=${{ secrets.GOOGLE_PLAY_KEYSTORE_PASSWORD }}" >> app/qr_gif/android/key.properties
+          echo "keyPassword=${{ secrets.GOOGLE_PLAY_KEYSTORE_PASSWORD }}" >> app/qr_gif/android/key.properties
+          echo "keyAlias=${{ secrets.GOOGLE_PLAY_KEYSTORE_ALIAS }}" >> app/qr_gif/android/key.properties
+
       - name: Build appbundle
         working-directory: app/qr_gif
         run: flutter build appbundle
@@ -168,13 +182,14 @@ jobs:
         with:
           name: android-release
 
+      # To create a key, follow instructions at https://github.com/r0adkll/upload-google-play
       - name: Deploy to Google Play Console
         uses: r0adkll/upload-google-play@v1
         with:
-          serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
-          packageName: <YOUR_PACKAGE_NAME>
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}
+          packageName: com.gif_code
           releaseFiles: app-release.aab
-          track: alpha
+          track: qa
           status: completed
 
   # merge_to_prod:
