@@ -30,13 +30,10 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4
 
-      - name: Output Run Number
-        run: echo ${{ github.run_number }}
-
       - name: "Create tag"
         uses: EndBug/latest-tag@v1.6.1
         with:
-          tag-name: ${{env.TAG}}
+          ref: ${{env.TAG}}
 
   deploy_infrastructure:
     name: "Deploy infrastructure"
@@ -176,6 +173,7 @@ jobs:
           echo "keyAlias=${{ secrets.GOOGLE_PLAY_KEYSTORE_ALIAS }}" >> app/qr_gif/android/key.properties
 
       - name: Update version in YAML
+        working-directory: app/qr_gif
         run: |
           echo "version: ${{env.FLUTTER_VERSION}}" >> pubspec.yaml
 
