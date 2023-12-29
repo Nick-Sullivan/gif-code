@@ -20,7 +20,6 @@ jobs:
   deploy_infrastructure:
     name: "Deploy infrastructure"
     runs-on: ubuntu-latest
-    working-directory: server
     timeout-minutes: 10
     defaults:
       run:
