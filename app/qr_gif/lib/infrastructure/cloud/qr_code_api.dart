@@ -1,0 +1,41 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:qr_gif/infrastructure/interfaces/qr_code_api.dart';
+import 'package:qr_gif/widgets/qr_code/qr_code_model.dart';
+import 'package:flutter/widgets.dart';
+
+class QrCodeApiInteractor implements IQrCodeApiInteractor {
+  final String url;
+  final List<QrCode> _cache = [];
+
+  QrCodeApiInteractor({required this.url});
+
+  @override
+  Future<QrCode> create(String giphyId, String text) async {
+    final uri = Uri.parse('$url/gif');
+    final request = '''{
+      "text": "$text",
+      "giphy_id": "$giphyId",
+      "transparency": 160,
+      "version": 6
+    }''';
+    final response = await http.post(uri, body: request);
+    if (response.statusCode != 200) {
+      throw Exception('uh oh');
+    }
+    final json = jsonDecode(response.body);
+    final image = await loadImageFromS3(json['url']);
+    final qr = QrCode(text: json['text'], image: image);
+    _cache.add(qr);
+    return qr;
+  }
+
+  Future<Image> loadImageFromS3(String url) async {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode != 200) {
+      throw Exception('uh oh');
+    }
+    final image = Image.memory(response.bodyBytes);
+    return image;
+  }
+}
