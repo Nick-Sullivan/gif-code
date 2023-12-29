@@ -96,7 +96,6 @@ jobs:
     name: "Build flutter app"
     needs: [deploy_infrastructure]
     runs-on: ubuntu-latest
-    working-directory: app/qr_gif
     timeout-minutes: 10
     defaults:
       run:
