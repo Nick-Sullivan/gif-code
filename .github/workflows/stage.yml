@@ -59,7 +59,7 @@ jobs:
         run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
 
   api_tests:
-    name: "API Tests"
+    name: "API tests"
     needs: [deploy_infrastructure]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -92,7 +92,7 @@ jobs:
         run: pytest tests/api
 
   merge_to_prod:
-    name: "PR to prod"
+    name: "Merge to production"
     needs: [api_tests]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -107,7 +107,7 @@ jobs:
         id: cpr
         run: |
           PR_URL=$(gh pr create --base production --title "Production deployment" --body "This was automatically generated from the stage environment.")
-          echo "::set-output name=pr_url::$PR_URL"
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
 

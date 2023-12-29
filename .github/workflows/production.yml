@@ -58,7 +58,7 @@ jobs:
         run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
 
   api_tests:
-    name: "API Tests"
+    name: "API tests"
     needs: [deploy_infrastructure]
     runs-on: ubuntu-latest
     timeout-minutes: 10
