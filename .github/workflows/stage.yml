@@ -176,9 +176,8 @@ jobs:
           echo "keyAlias=${{ secrets.GOOGLE_PLAY_KEYSTORE_ALIAS }}" >> app/qr_gif/android/key.properties
 
       - name: Update version in YAML
-        run:
+        run: |
           echo "version: ${{env.FLUTTER_VERSION}}" >> pubspec.yaml
-        # run: sed -i 's/99.99.99+99/${{ steps.version.outputs.content }}+${{ github.run_number }}/g' pubspec.yaml
 
       - name: Build appbundle
         working-directory: app/qr_gif
