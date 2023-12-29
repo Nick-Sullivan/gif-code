@@ -19,6 +19,7 @@ function Init-Infrastructure([string]$environment) {
     terraform init -backend-config $key -reconfigure
     $text = 'environment="' + $environment + '"'
     $text | Out-File -FilePath "terraform.tfvars" -Encoding utf8
+    terraform apply -auto-approve
     Set-Location ../..
 }
 

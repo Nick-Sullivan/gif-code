@@ -11,26 +11,19 @@ ENVIRONMENT=dev
 
 If you want to create a different environment, change `dev` to any unique string and follow the remaining steps.
 
-2. Initialise terraform
+2. Initialise terraform, this pulls down infrastructure variables like API Gateway URLs.
 
 ```bash
 ./make.ps1 init
 ```
 
-3. Deploy terraform
-
-```bash
-cd ../infrastructure
-terraform apply
-```
-
-4. Build
+3. Build
 
 ```bash
 ./make.ps1 build
 ```
 
-5. Cleanup
+4. Cleanup
 
 ```bash
 cd terraform/infrastructure
