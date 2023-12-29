@@ -1,16 +1,15 @@
-name: "Stage"
+name: "Production"
 
 on:
   push:
-    branches: ["stage"]
+    branches: ["production"]
 
 env:
   IS_CICD: "true"
-  ENVIRONMENT: "stage"
+  ENVIRONMENT: "production"
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -90,35 +89,3 @@ jobs:
       - name: Run server api tests
         working-directory: server
         run: pytest tests/api
-
-  merge_to_prod:
-    name: "PR to prod"
-    needs: [api_tests]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v4
-
-      - name: Create PR
-        id: cpr
-        run: |
-          PR_URL=$(gh pr create --base production --title "Production deployment" --body "This was automatically generated from the stage environment.")
-          echo "::set-output name=pr_url::$PR_URL"
-        env:
-          GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
-
-      - name: Approve PR
-        run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{ steps.cpr.outputs.pr_url }}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      - name: Mark PR to auto-merge when ready
-        run: gh pr merge --auto --merge "$PR_URL"
-        env:
-          PR_URL: ${{ steps.cpr.outputs.pr_url }}
-          GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
