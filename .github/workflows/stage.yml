@@ -114,7 +114,7 @@ jobs:
       - name: Create PR
         run: gh pr create --base production --title "Deploy to production" --body "Automatically generated"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PR_TOKEN }}
 
       # - name: Approve PR
       #   run: gh pr review --approve "$PR_URL"
