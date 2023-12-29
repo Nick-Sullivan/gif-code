@@ -63,7 +63,6 @@ jobs:
     name: "API tests"
     needs: [deploy_infrastructure]
     runs-on: ubuntu-latest
-    working-directory: server
     timeout-minutes: 10
     defaults:
       run:
@@ -121,6 +120,7 @@ jobs:
       # TODO update version
 
       - name: Get dependencies
+        working-directory: app/qr_gif
         run: flutter pub get
 
       - name: Initialise terraform state (infrastructure)
@@ -132,19 +132,19 @@ jobs:
         run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
 
       - name: Build appbundle
+        working-directory: app/qr_gif
         run: flutter build appbundle
 
       - name: Save Android bundle
         uses: actions/upload-artifact@v4
         with:
           name: android-release
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
 
   deploy_app:
     name: "Deploy flutter app"
     needs: [build_app]
     runs-on: ubuntu-latest
-    working-directory: app/qr_gif
     timeout-minutes: 10
     defaults:
       run:
