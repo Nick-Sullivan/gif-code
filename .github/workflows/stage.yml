@@ -89,3 +89,36 @@ jobs:
       - name: Run server api tests
         working-directory: server
         run: pytest tests/api
+
+  merge_to_prod:
+    name: "PR to prod"
+    needs: [api_tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          base: stage
+          branch: production
+          title: "Deploy to production"
+          token: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Approve PR
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Mark PR to auto-merge when ready
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
