@@ -59,10 +59,10 @@ jobs:
             app:
               - 'app/**'
 
-      - id: Echo outputs app
+      - name: Echo outputs app
         run: echo ${{ steps.filter.outputs.app }}
 
-      - id: Echo outputs server
+      - name: Echo outputs server
         run: echo ${{ steps.filter.outputs.app }}
 
   deploy_infrastructure:
