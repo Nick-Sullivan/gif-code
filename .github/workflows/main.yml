@@ -250,7 +250,7 @@ jobs:
           packageName: com.gif_code
           releaseFiles: app-release.aab
           track: internal
-          status: complete
+          status: completed
 
   # Production deployment
 
@@ -272,7 +272,7 @@ jobs:
           ref: production
 
   deploy_production_infrastructure:
-    name: "Deploy infrastructure"
+    name: "Deploy production infrastructure"
     needs: [create_production_tag]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -391,7 +391,7 @@ jobs:
           path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
 
   deploy_production_app:
-    name: "Deploy staging flutter app"
+    name: "Deploy production flutter app"
     needs: [build_production_app]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -415,7 +415,7 @@ jobs:
           packageName: com.gif_code
           releaseFiles: app-release.aab
           track: alpha
-          status: complete
+          status: completed
 
   # merge_to_prod:
   #   name: "Merge to production"
