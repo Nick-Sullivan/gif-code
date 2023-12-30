@@ -36,6 +36,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: production
           filters: |
             server:
               - 'server/**'
@@ -62,7 +63,7 @@ jobs:
     name: "Deploy infrastructure"
     needs: [detect_changes, create_tag]
     runs-on: ubuntu-latest
-    if: ${{ detect_changes.changes.outputs.server == 'true' }}
+    if: ${{ needs.detect_changes.changes.outputs.server == 'true' }}
     timeout-minutes: 10
     defaults:
       run:
@@ -136,8 +137,8 @@ jobs:
 
   build_app:
     name: "Build flutter app"
-    needs: [deploy_infrastructure]
-    if: ${{ detect_changes.changes.outputs.app == 'true' }}
+    needs: [deploy_infrastructure, detect_changes]
+    if: ${{ needs.detect_changes.changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
