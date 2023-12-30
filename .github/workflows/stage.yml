@@ -69,7 +69,7 @@ jobs:
     name: "Deploy infrastructure"
     needs: [detect_changes]
     runs-on: ubuntu-latest
-    if: ${{ needs.detect_changes.changes.outputs.server == 'true' }}
+    if: ${{ needs.detect_changes.outputs.server == 'true' }}
     timeout-minutes: 10
     defaults:
       run:
@@ -144,7 +144,7 @@ jobs:
   build_app:
     name: "Build flutter app"
     needs: [deploy_infrastructure, detect_changes]
-    if: ${{ needs.detect_changes.changes.outputs.app == 'true' }}
+    if: ${{ needs.detect_changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
