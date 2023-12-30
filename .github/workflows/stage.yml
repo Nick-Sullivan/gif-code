@@ -19,29 +19,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   detect_changes:
     name: "Detect changes"
-      runs-on: ubuntu-latest
-      timeout-minutes: 1
-      outputs:
-        server: ${{ steps.filter.outputs.server }}
-        app: ${{ steps.filter.outputs.app }}
-      defaults:
-        run:
-          shell: bash
-      steps:
-        - name: Checkout branch
-          uses: actions/checkout@v4
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    outputs:
+      server: ${{ steps.filter.outputs.server }}
+      app: ${{ steps.filter.outputs.app }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
 
-        - uses: dorny/paths-filter@v2
-          id: filter
-          with:
-            filters: |
-              server:
-                - 'server/**'
-              app:
-                - 'app/**'
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            server:
+              - 'server/**'
+            app:
+              - 'app/**'
 
   create_tag:
     name: "Create tag"
