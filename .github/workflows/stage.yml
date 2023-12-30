@@ -19,6 +19,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  create_tag:
+    name: "Create tag"
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: "Create tag"
+        uses: EndBug/latest-tag@v1.6.1
+        with:
+          ref: ${{env.TAG}}
+
   detect_changes:
     name: "Detect changes"
     runs-on: ubuntu-latest
@@ -43,25 +59,15 @@ jobs:
             app:
               - 'app/**'
 
-  create_tag:
-    name: "Create tag"
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v4
+      - id: Echo outputs app
+        run: echo ${{ steps.filter.outputs.app }}
 
-      - name: "Create tag"
-        uses: EndBug/latest-tag@v1.6.1
-        with:
-          ref: ${{env.TAG}}
+      - id: Echo outputs server
+        run: echo ${{ steps.filter.outputs.app }}
 
   deploy_infrastructure:
     name: "Deploy infrastructure"
-    needs: [detect_changes, create_tag]
+    needs: [detect_changes]
     runs-on: ubuntu-latest
     if: ${{ needs.detect_changes.changes.outputs.server == 'true' }}
     timeout-minutes: 10
