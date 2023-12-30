@@ -15,7 +15,7 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # Pre-production testing
@@ -142,13 +142,11 @@ jobs:
       - name: Install server libraries
         run: pip install -r server/requirements.txt
 
-      - name: Set environment variable
-        run: |
-          ENVIRONMENT=stage
-
       - name: Run server api tests
         working-directory: server
-        run: pytest tests/api
+        run: |
+          export ENVIRONMENT=stage
+          pytest tests/api
 
   build_staging_app:
     name: "Build staging flutter app"
