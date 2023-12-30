@@ -19,6 +19,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+
+  detect_changes:
+    name: "Detect changes"
+      runs-on: ubuntu-latest
+      timeout-minutes: 1
+      outputs:
+        server: ${{ steps.filter.outputs.server }}
+        app: ${{ steps.filter.outputs.app }}
+      defaults:
+        run:
+          shell: bash
+      steps:
+        - name: Checkout branch
+          uses: actions/checkout@v4
+
+        - uses: dorny/paths-filter@v2
+          id: filter
+          with:
+            filters: |
+              server:
+                - 'server/**'
+              app:
+                - 'app/**'
+
   create_tag:
     name: "Create tag"
     runs-on: ubuntu-latest
@@ -37,8 +61,9 @@ jobs:
 
   deploy_infrastructure:
     name: "Deploy infrastructure"
-    needs: [create_tag]
+    needs: [detect_changes, create_tag]
     runs-on: ubuntu-latest
+    if: ${{ detect_changes.changes.outputs.server == 'true' }}
     timeout-minutes: 10
     defaults:
       run:
@@ -113,6 +138,7 @@ jobs:
   build_app:
     name: "Build flutter app"
     needs: [deploy_infrastructure]
+    if: ${{ detect_changes.changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -212,7 +238,7 @@ jobs:
           packageName: com.gif_code
           releaseFiles: app-release.aab
           track: internal
-          status: draft
+          status: complete
 
   # merge_to_prod:
   #   name: "Merge to production"

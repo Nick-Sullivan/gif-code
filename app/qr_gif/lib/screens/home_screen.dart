@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
       leading: const Image(image: AssetImage("assets/images/flutter_logo.png")),
-      title: const Text('QR GIF'),
+      title: const Text('GIF Code'),
       backgroundColor: Theme.of(context).primaryColor,
     );
   }
@@ -40,7 +40,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
-                controller: textController..text = "Hello from QR GIF!",
+                controller: textController..text = "Enter your QR text here",
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Enter text",

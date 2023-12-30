@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'QR GIF',
+      title: 'GIF Code',
       initialRoute: '/home',
       routes: {
         '/home': (context) => HomeScreen(),
