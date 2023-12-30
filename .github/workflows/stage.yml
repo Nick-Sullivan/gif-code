@@ -59,32 +59,16 @@ jobs:
             app:
               - 'app/**'
 
-      - name: Echo outputs app
+      - name: Are there changes to the app?
         run: echo ${{ steps.filter.outputs.app }}
 
-      - name: Echo outputs server
+      - name: Are there changes to the server?
         run: echo ${{ steps.filter.outputs.server }}
-
-  use_detected_changes:
-    name: "Use detected changes"
-    needs: [detect_changes]
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Echo outputs app
-        run: echo ${{ needs.detect_changes.outputs.app }}
-
-      - name: Echo outputs server
-        run: echo ${{ needs.detect_changes.outputs.server }}
 
   deploy_infrastructure:
     name: "Deploy infrastructure"
     needs: [detect_changes]
     runs-on: ubuntu-latest
-    if: ${{ needs.detect_changes.outputs.server == 'true' }}
     timeout-minutes: 10
     defaults:
       run:
@@ -158,8 +142,7 @@ jobs:
 
   build_app:
     name: "Build flutter app"
-    needs: [deploy_infrastructure, detect_changes]
-    if: ${{ !cancelled() && needs.detect_changes.outputs.app == 'true' }}
+    needs: [deploy_infrastructure]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -236,7 +219,8 @@ jobs:
 
   deploy_app:
     name: "Deploy flutter app"
-    needs: [build_app]
+    needs: [build_app, detect_changes]
+    if: ${{ needs.detect_changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
