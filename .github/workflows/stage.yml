@@ -19,8 +19,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  create_tag:
-    name: "Create tag"
+  # Pre-production testing
+
+  # detect_changes:
+  #   name: "Detect changes"
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 1
+  #   outputs:
+  #     server: ${{ steps.filter.outputs.server }}
+  #     app: ${{ steps.filter.outputs.app }}
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - name: Checkout branch
+  #       uses: actions/checkout@v4
+
+  #     - uses: dorny/paths-filter@v2
+  #       id: filter
+  #       with:
+  #         base: ${{ github.ref }}
+  #         filters: |
+  #           server:
+  #             - 'server/**'
+  #           app:
+  #             - 'app/**'
+
+  #     - name: Are there changes to the app?
+  #       run: echo ${{ steps.filter.outputs.app }}
+
+  #     - name: Are there changes to the server?
+  #       run: echo ${{ steps.filter.outputs.server }}
+
+  create_staging_tag:
+    name: "Create staging tag"
     runs-on: ubuntu-latest
     timeout-minutes: 1
     defaults:
@@ -30,44 +62,18 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4
 
-      - name: "Create tag"
+      - name: "Create unique tag"
         uses: EndBug/latest-tag@v1.6.1
         with:
           ref: ${{env.TAG}}
 
-  detect_changes:
-    name: "Detect changes"
-    runs-on: ubuntu-latest
-    timeout-minutes: 1
-    outputs:
-      server: ${{ steps.filter.outputs.server }}
-      app: ${{ steps.filter.outputs.app }}
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v4
-
-      - uses: dorny/paths-filter@v2
-        id: filter
+      - name: "Create staging tag"
+        uses: EndBug/latest-tag@v1.6.1
         with:
-          base: production
-          filters: |
-            server:
-              - 'server/**'
-            app:
-              - 'app/**'
+          ref: stage
 
-      - name: Are there changes to the app?
-        run: echo ${{ steps.filter.outputs.app }}
-
-      - name: Are there changes to the server?
-        run: echo ${{ steps.filter.outputs.server }}
-
-  deploy_infrastructure:
-    name: "Deploy infrastructure"
-    needs: [detect_changes]
+  deploy_staging_infrastructure:
+    name: "Deploy staging infrastructure"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -89,15 +95,15 @@ jobs:
 
       - name: Initialise terraform state (foundation)
         working-directory: server/terraform/foundation
-        run: terraform init -backend-config "key=gif_code/${{env.ENVIRONMENT}}/foundation/terraform.tfstate"
+        run: terraform init -backend-config "key=gif_code/stage/foundation/terraform.tfstate"
 
       - name: Apply terraform state (foundation)
         working-directory: server/terraform/foundation
-        run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}" -var="giphy_api_key=${{secrets.GIPHY_API_KEY}}"
+        run: terraform apply -auto-approve -var="environment=stage" -var="giphy_api_key=${{secrets.GIPHY_API_KEY}}"
 
       - name: Initialise terraform state (infrastructure)
         working-directory: server/terraform/infrastructure
-        run: terraform init -backend-config "key=gif_code/${{env.ENVIRONMENT}}/infrastructure/terraform.tfstate"
+        run: terraform init -backend-config "key=gif_code/stage/infrastructure/terraform.tfstate"
 
       - name: Build libs (infrastructure)
         working-directory: server/lambda/libs
@@ -105,11 +111,11 @@ jobs:
 
       - name: Apply terraform state (infrastructure)
         working-directory: server/terraform/infrastructure
-        run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
+        run: terraform apply -auto-approve -var="environment=stage"
 
   api_tests:
     name: "API tests"
-    needs: [deploy_infrastructure]
+    needs: [deploy_staging_infrastructure]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -140,9 +146,9 @@ jobs:
         working-directory: server
         run: pytest tests/api
 
-  build_app:
-    name: "Build flutter app"
-    needs: [deploy_infrastructure]
+  build_staging_app:
+    name: "Build staging flutter app"
+    needs: [deploy_staging_infrastructure]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -182,11 +188,11 @@ jobs:
 
       - name: Initialise terraform state (infrastructure)
         working-directory: app/qr_gif/terraform/infrastructure
-        run: terraform init -backend-config "key=gif_code_app/${{env.ENVIRONMENT}}/infrastructure/terraform.tfstate"
+        run: terraform init -backend-config "key=gif_code_app/stage/infrastructure/terraform.tfstate"
 
       - name: Apply terraform state (infrastructure)
         working-directory: app/qr_gif/terraform/infrastructure
-        run: terraform apply -auto-approve -var="environment=${{env.ENVIRONMENT}}"
+        run: terraform apply -auto-approve -var="environment=stage"
 
       - name: Download Android keystore
         id: android_keystore
@@ -217,10 +223,9 @@ jobs:
           name: android-release
           path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
 
-  deploy_app:
-    name: "Deploy flutter app"
-    needs: [build_app, detect_changes]
-    if: ${{ needs.detect_changes.outputs.app == 'true' }}
+  deploy_staging_app:
+    name: "Deploy staging flutter app"
+    needs: [build_staging_app, api_tests]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -243,6 +248,171 @@ jobs:
           packageName: com.gif_code
           releaseFiles: app-release.aab
           track: internal
+          status: complete
+
+  # Production deployment
+
+  create_production_tag:
+    name: "Create production tag"
+    needs: [deploy_staging_app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: "Create production tag"
+        uses: EndBug/latest-tag@v1.6.1
+        with:
+          ref: production
+
+  deploy_production_infrastructure:
+    name: "Deploy infrastructure"
+    needs: [create_production_tag]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "ap-southeast-2"
+
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Initialise terraform state (foundation)
+        working-directory: server/terraform/foundation
+        run: terraform init -backend-config "key=gif_code/production/foundation/terraform.tfstate"
+
+      - name: Apply terraform state (foundation)
+        working-directory: server/terraform/foundation
+        run: terraform apply -auto-approve -var="environment=production" -var="giphy_api_key=${{secrets.GIPHY_API_KEY}}"
+
+      - name: Initialise terraform state (infrastructure)
+        working-directory: server/terraform/infrastructure
+        run: terraform init -backend-config "key=gif_code/production/infrastructure/terraform.tfstate"
+
+      - name: Build libs (infrastructure)
+        working-directory: server/lambda/libs
+        run: pip install -r requirements.txt --target python
+
+      - name: Apply terraform state (infrastructure)
+        working-directory: server/terraform/infrastructure
+        run: terraform apply -auto-approve -var="environment=production"
+
+  build_production_app:
+    name: "Build production flutter app"
+    needs: [deploy_production_infrastructure]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "12.x"
+          cache: "gradle"
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.0"
+          channel: "stable"
+          cache: true
+
+      - name: Setup AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "ap-southeast-2"
+
+      - name: Setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Get dependencies
+        working-directory: app/qr_gif
+        run: flutter pub get
+
+      - name: Initialise terraform state (infrastructure)
+        working-directory: app/qr_gif/terraform/infrastructure
+        run: terraform init -backend-config "key=gif_code_app/production/infrastructure/terraform.tfstate"
+
+      - name: Apply terraform state (infrastructure)
+        working-directory: app/qr_gif/terraform/infrastructure
+        run: terraform apply -auto-approve -var="environment=production"
+
+      - name: Download Android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: upload-keystore.jks
+          encodedString: ${{ secrets.GOOGLE_PLAY_KEYSTORE_BASE64 }}
+
+      - name: Create key.properties
+        run: |
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > app/qr_gif/android/key.properties
+          echo "storePassword=${{ secrets.GOOGLE_PLAY_KEYSTORE_PASSWORD }}" >> app/qr_gif/android/key.properties
+          echo "keyPassword=${{ secrets.GOOGLE_PLAY_KEYSTORE_PASSWORD }}" >> app/qr_gif/android/key.properties
+          echo "keyAlias=${{ secrets.GOOGLE_PLAY_KEYSTORE_ALIAS }}" >> app/qr_gif/android/key.properties
+
+      - name: Update version in YAML
+        working-directory: app/qr_gif
+        run: |
+          echo "version: ${{env.FLUTTER_VERSION}}" >> pubspec.yaml
+
+      - name: Build appbundle
+        working-directory: app/qr_gif
+        run: flutter build appbundle
+
+      - name: Save Android bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
+
+  deploy_production_app:
+    name: "Deploy staging flutter app"
+    needs: [build_production_app]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Load Android build
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release
+
+      # To create a key, follow instructions at https://github.com/r0adkll/upload-google-play
+      - name: Deploy to Google Play Console
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}
+          packageName: com.gif_code
+          releaseFiles: app-release.aab
+          track: alpha
           status: complete
 
   # merge_to_prod:
