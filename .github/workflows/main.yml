@@ -142,6 +142,10 @@ jobs:
       - name: Install server libraries
         run: pip install -r server/requirements.txt
 
+      - name: Set environment variable
+        run: |
+          ENVIRONMENT=stage
+
       - name: Run server api tests
         working-directory: server
         run: pytest tests/api
