@@ -1,18 +1,17 @@
-name: "Stage"
+name: "Main"
 
 on:
   push:
-    branches: ["stage"]
+    branches: ["main"]
 
 env:
   IS_CICD: "true"
-  ENVIRONMENT: "stage"
   TAG: "1.0.${{github.run_number}}"
   FLUTTER_VERSION: "1.0.${{github.run_number}}+${{github.run_number}}"
 
 permissions:
   contents: write
-  pull-requests: write
+  # pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -74,6 +73,7 @@ jobs:
 
   deploy_staging_infrastructure:
     name: "Deploy staging infrastructure"
+    needs: [create_staging_tag]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
