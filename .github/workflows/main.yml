@@ -148,6 +148,37 @@ jobs:
           export ENVIRONMENT=stage
           pytest tests/api
 
+  flutter_tests:
+    name: "Run flutter tests"
+    needs: [deploy_staging_infrastructure]
+    runs-on: macos-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.0"
+          channel: "stable"
+          cache: true
+
+      - name: Get dependencies
+        working-directory: app/qr_gif
+        run: flutter pub get
+
+      - uses: futureware-tech/simulator-action@v3
+        with:
+          model: "iPhone 14"
+
+      - name: Run tests
+        working-directory: app/qr_gif
+        run: flutter test integration_test
+
   build_staging_app:
     name: "Build staging flutter app"
     needs: [deploy_staging_infrastructure]
@@ -215,10 +246,6 @@ jobs:
         run: |
           echo "version: ${{env.FLUTTER_VERSION}}" >> pubspec.yaml
 
-      - name: Run tests
-        working-directory: app/qr_gif
-        run: flutter test integration_test -d all
-
       - name: Build appbundle
         working-directory: app/qr_gif
         run: flutter build appbundle
@@ -231,7 +258,7 @@ jobs:
 
   deploy_staging_app:
     name: "Deploy staging flutter app"
-    needs: [build_staging_app, api_tests]
+    needs: [build_staging_app, api_tests, flutter_tests]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
