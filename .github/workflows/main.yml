@@ -149,7 +149,7 @@ jobs:
           pytest tests/api
 
   flutter_tests:
-    name: "Run flutter tests"
+    name: "Flutter tests"
     needs: [deploy_staging_infrastructure]
     runs-on: macos-latest
     timeout-minutes: 10
