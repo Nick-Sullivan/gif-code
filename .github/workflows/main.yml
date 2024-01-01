@@ -217,7 +217,7 @@ jobs:
 
       - name: Run tests
         working-directory: app/qr_gif
-        run: flutter test integration_test
+        run: flutter test integration_test -d all
 
       - name: Build appbundle
         working-directory: app/qr_gif
