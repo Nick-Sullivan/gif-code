@@ -11,6 +11,11 @@
         "type": "dart",
         "flutterMode": "debug",
         "args": ["--web-renderer=html"]
-      }
+    },
+    {
+        "name": "integration tests",
+        "request": "launch",
+        "type": "dart",
+    }
   ]
 }

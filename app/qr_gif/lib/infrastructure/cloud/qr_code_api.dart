@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 
 class QrCodeApiInteractor implements IQrCodeApiInteractor {
   final String url;
-  final List<QrCode> _cache = [];
 
   QrCodeApiInteractor({required this.url});
 
@@ -19,6 +18,22 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
       "transparency": 160,
       "version": 6
     }''';
+    return await sendRequest(uri, request);
+  }
+
+  @override
+  Future<QrCode> createRandom(String text) async {
+    final uri = Uri.parse('$url/gif');
+    final request = '''{
+      "text": "$text",
+      "giphy_id": "",
+      "transparency": 160,
+      "version": 6
+    }''';
+    return await sendRequest(uri, request);
+  }
+
+  Future<QrCode> sendRequest(Uri uri, String request) async {
     final response = await http.post(uri, body: request);
     if (response.statusCode != 200) {
       throw Exception('uh oh');
@@ -26,7 +41,6 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
     final json = jsonDecode(response.body);
     final image = await loadImageFromS3(json['url']);
     final qr = QrCode(text: json['text'], image: image);
-    _cache.add(qr);
     return qr;
   }
 
@@ -35,7 +49,8 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
     if (response.statusCode != 200) {
       throw Exception('uh oh');
     }
-    final image = Image.memory(response.bodyBytes);
+    final image =
+        Image.memory(response.bodyBytes, key: const Key("qrCodeImage"));
     return image;
   }
 }

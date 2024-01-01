@@ -28,6 +28,11 @@ function Build() {
     flutter build appbundle
 }
 
+function Test() {
+    Write-Output "Testing app"
+    flutter test integration_test
+}
+
 switch ($command) {
     "init" { 
         $environment = Load-Env 'ENVIRONMENT'
@@ -39,4 +44,5 @@ switch ($command) {
         }
     }
     "build" { Build }
+    "test" { Test }
 }

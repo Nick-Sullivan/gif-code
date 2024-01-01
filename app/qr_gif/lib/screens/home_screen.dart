@@ -40,6 +40,7 @@ class HomeScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20.0),
               child: TextField(
+                key: const Key("qrText"),
                 controller: textController..text = "Enter your QR text here",
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -48,6 +49,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             TextButton(
+              key: const Key("gifButton"),
               child: const Text('SELECT GIF'),
               onPressed: () async {
                 final gif = await giphyApi.create(context);
@@ -59,7 +61,18 @@ class HomeScreen extends StatelessWidget {
                 }
               },
             ),
-            QrCodeView(controller: qrCodeController),
+            TextButton(
+              key: const Key("randomGifButton"),
+              child: const Text('CREATE RANDOM GIF'),
+              onPressed: () async {
+                qrCodeController.isLoading = true;
+                final newQr = await qrApi.createRandom(textController.text);
+                qrCodeController.isLoading = false;
+                qrCodeController.qrCode = newQr;
+              },
+            ),
+            QrCodeView(
+                controller: qrCodeController, key: const Key('qrCodeView')),
           ],
         ),
       ),

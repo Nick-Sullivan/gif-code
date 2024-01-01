@@ -36,7 +36,10 @@ def _create_qr_gif(request_body: Dict) -> Image:
     request = CreateQrRequest(**request_body)
         
     print(f'{time.time() - start:.2f} Creating gif')
-    gif = gif_maker.get_id(request.giphy_id)
+    if len(request.giphy_id) > 0:
+        gif = gif_maker.get_id(request.giphy_id)
+    else:
+        gif = gif_maker.get_random()
 
     print(f'{time.time() - start:.2f} Creating QR')
     qr = qr_builder\
