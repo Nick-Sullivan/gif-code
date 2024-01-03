@@ -304,10 +304,16 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v4
 
+      - name: Create flutter version
+        id: version
+        run: echo "FLUTTER_BUILD=$VERSION" >> $GITHUB_OUTPUT
+        env:
+          VERSION: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}
+
       - name: Load Android build
         uses: actions/download-artifact@v4
         with:
-          name: android-release
+          name: android-release-${{steps.version.outputs.FLUTTER_BUILD}}
 
       # To create a key, follow instructions at https://github.com/r0adkll/upload-google-play
       - name: Deploy to Google Play Console
