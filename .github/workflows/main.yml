@@ -274,7 +274,7 @@ jobs:
       - name: Update version in YAML
         working-directory: app/qr_gif
         run: |
-          echo "version: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}} >> pubspec.yaml
+          echo "version: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}" >> pubspec.yaml
 
       - name: Build appbundle
         working-directory: app/qr_gif
