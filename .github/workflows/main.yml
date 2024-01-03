@@ -48,7 +48,6 @@ jobs:
   #     - name: Are there changes to the server?
   #       run: echo ${{ steps.filter.outputs.server }}
 
-
   create_staging_tag:
     name: "Create staging tag"
     runs-on: ubuntu-latest
@@ -71,7 +70,6 @@ jobs:
       - name: "Create unique tag"
         uses: EndBug/latest-tag@v1.6.1
         with:
-          ref: ${{env.TAG}}
           ref: "1.0.${{steps.buildnumber.outputs.build_number}}"
 
       - name: "Create staging tag"
@@ -207,7 +205,13 @@ jobs:
 
   build_staging_app:
     name: "Build staging flutter app"
-    needs: [create_staging_tag, deploy_staging_infrastructure, flutter_tests, api_tests]
+    needs:
+      [
+        create_staging_tag,
+        deploy_staging_infrastructure,
+        flutter_tests,
+        api_tests,
+      ]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
