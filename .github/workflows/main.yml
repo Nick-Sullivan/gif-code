@@ -271,10 +271,16 @@ jobs:
           echo "keyPassword=${{ secrets.GOOGLE_PLAY_KEYSTORE_PASSWORD }}" >> app/qr_gif/android/key.properties
           echo "keyAlias=${{ secrets.GOOGLE_PLAY_KEYSTORE_ALIAS }}" >> app/qr_gif/android/key.properties
 
+      - name: Create flutter version
+        id: version
+        run: echo "$FLUTTER_BUILD" >> $GITHUB_OUTPUT
+        env:
+          FLUTTER_BUILD: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}
+
       - name: Update version in YAML
         working-directory: app/qr_gif
         run: |
-          echo "version: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}" >> pubspec.yaml
+          echo "version: ${{steps.version.outputs.FLUTTER_BUILD}}" >> pubspec.yaml
 
       - name: Build appbundle
         working-directory: app/qr_gif
@@ -283,7 +289,7 @@ jobs:
       - name: Save Android bundle
         uses: actions/upload-artifact@v4
         with:
-          name: android-release
+          name: android-release-${{steps.version.outputs.FLUTTER_BUILD}}
           path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
 
   deploy_staging_app:
