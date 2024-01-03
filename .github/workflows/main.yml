@@ -456,14 +456,14 @@ jobs:
         with:
           name: android-release
 
-      To create a key, follow instructions at https://github.com/r0adkll/upload-google-play
+      # To create a key, follow instructions at https://github.com/r0adkll/upload-google-play
       - name: Deploy to Google Play Console
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}
           packageName: com.gif_code
           releaseFiles: app-release.aab
-          track: alpha  # closed testing
+          track: alpha # closed testing
           status: completed
 
   # merge_to_prod:
