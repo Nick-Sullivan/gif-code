@@ -273,9 +273,9 @@ jobs:
 
       - name: Create flutter version
         id: version
-        run: echo "$FLUTTER_BUILD" >> $GITHUB_OUTPUT
+        run: echo "FLUTTER_BUILD=$VERSION" >> $GITHUB_OUTPUT
         env:
-          FLUTTER_BUILD: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}
+          VERSION: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}
 
       - name: Update version in YAML
         working-directory: app/qr_gif
