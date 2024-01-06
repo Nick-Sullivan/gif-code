@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 class QrCodeApiInteractor implements IQrCodeApiInteractor {
   final String url;
+  final giphyIdForTesting = "gw3IWyGkC0rsazTi";
 
   QrCodeApiInteractor({required this.url});
 
@@ -23,10 +24,14 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
 
   @override
   Future<QrCode> createRandom(String text) async {
+    const isTesting =
+        bool.fromEnvironment("USE_TESTING_GIPHY_ID", defaultValue: false);
+    final giphyId = isTesting ? giphyIdForTesting : "";
     final uri = Uri.parse('$url/gif');
+
     final request = '''{
       "text": "$text",
-      "giphy_id": "",
+      "giphy_id": "$giphyId",
       "transparency": 160,
       "version": 6
     }''';

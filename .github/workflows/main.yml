@@ -201,10 +201,10 @@ jobs:
 
       - name: Run tests
         working-directory: app/qr_gif
-        run: flutter test integration_test
+        run: flutter test integration_test --dart-define=USE_TESTING_GIPHY_ID=true
 
   build_staging_app:
-    name: "Build staging flutter app"
+    name: "Build staging app"
     needs:
       [
         create_staging_tag,
@@ -293,8 +293,8 @@ jobs:
           path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
 
   deploy_staging_app:
-    name: "Deploy staging flutter app"
-    needs: [build_staging_app, api_tests, flutter_tests]
+    name: "Deploy staging app"
+    needs: [create_staging_tag, build_staging_app, api_tests, flutter_tests]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
