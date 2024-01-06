@@ -10,10 +10,6 @@ class QrCodeView extends StatefulWidget {
 }
 
 class _QrCodeViewState extends State<QrCodeView> {
-  final Image defaultImage = const Image(
-      image: AssetImage("assets/images/flutter_logo.png"),
-      key: Key("defaultImage"));
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
@@ -23,7 +19,7 @@ class _QrCodeViewState extends State<QrCodeView> {
             return const CircularProgressIndicator(key: Key('loadingImage'));
           }
           if (widget.controller.qrCode == null) {
-            return defaultImage;
+            return const SizedBox();
           }
           return widget.controller.qrCode!.image;
         });

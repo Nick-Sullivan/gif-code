@@ -26,7 +26,6 @@ class HomeScreen extends StatelessWidget {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      leading: const Image(image: AssetImage("assets/images/flutter_logo.png")),
       title: const Text('GIF Code'),
       backgroundColor: Theme.of(context).primaryColor,
     );

@@ -201,7 +201,7 @@ jobs:
 
       - name: Run tests
         working-directory: app/qr_gif
-        run: flutter test integration_test --dart-define=USE_TESTING_GIPHY_ID=true
+        run: flutter test integration_test --dart-define=IS_TESTING=true
 
   build_staging_app:
     name: "Build staging app"

@@ -30,7 +30,7 @@ function Build() {
 
 function Test() {
     Write-Output "Testing app"
-    flutter test integration_test --dart-define=USE_TESTING_GIPHY_ID=true 
+    flutter test integration_test --dart-define=IS_TESTING=true 
 }
 
 switch ($command) {

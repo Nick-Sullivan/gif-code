@@ -24,14 +24,14 @@ void main() {
     isSetUp = true;
   }
 
-  testWidgets('when opened, it should show a default image',
+  testWidgets('when opened, it should not show a default image',
       (WidgetTester tester) async {
     await setup();
     await tester.pumpWidget(const MyApp());
     final qrCodeView = find.byKey(const Key('qrCodeView'));
     final defaultImage = find.descendant(
         of: qrCodeView, matching: find.byKey(const Key('defaultImage')));
-    expect(defaultImage, findsOneWidget);
+    expect(defaultImage, findsNothing);
   });
 
   testWidgets('when entering text, it should show the text',

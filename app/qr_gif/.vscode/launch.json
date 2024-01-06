@@ -16,6 +16,9 @@
         "name": "integration tests",
         "request": "launch",
         "type": "dart",
+        "toolArgs": [
+            "--dart-define", "IS_TESTING=true"
+        ],
     }
   ]
 }
