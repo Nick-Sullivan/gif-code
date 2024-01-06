@@ -31,7 +31,7 @@ function Init-Foundation([string]$environment, [string]$giphyApiKey) {
 }
 
 function Init-Infrastructure([string]$environment) {
-    $key = "key=gif_code/$environment/infra/terraform.tfstate"
+    $key = "key=gif_code/$environment/infrastructure/terraform.tfstate"
     Write-Output $key
     Set-Location terraform/infrastructure
     terraform init -backend-config $key -reconfigure

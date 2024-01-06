@@ -83,3 +83,8 @@ resource "aws_iam_role" "create_qr_gif" {
     policy = data.aws_iam_policy_document.read_s3.json
   }
 }
+
+resource "aws_lambda_function_event_invoke_config" "create_qr_gif" {
+  function_name                = aws_lambda_function.create_qr_gif.function_name
+  maximum_retry_attempts       = 0
+}

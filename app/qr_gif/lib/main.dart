@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'GIF Code',
       initialRoute: '/home',
+      color: Colors.black,
       routes: {
         '/home': (context) => HomeScreen(),
       },

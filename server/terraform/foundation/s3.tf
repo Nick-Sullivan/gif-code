@@ -21,7 +21,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "bucket" {
     id     = "delete_gifs"
     status = "Enabled"
     expiration {
-      days = 10
+      days = 1
     }
     filter {
       prefix = "temp"

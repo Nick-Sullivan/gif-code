@@ -13,7 +13,7 @@ function Load-Env([string]$key) {
 }
 
 function Init-Infrastructure([string]$environment) {
-    $key = "key=gif_code_app/$environment/infra/terraform.tfstate"
+    $key = "key=gif_code_app/$environment/infrastructure/terraform.tfstate"
     Write-Output $key
     Set-Location terraform/infrastructure
     terraform init -backend-config $key -reconfigure

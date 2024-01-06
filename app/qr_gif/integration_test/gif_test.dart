@@ -29,9 +29,9 @@ void main() {
     await setup();
     await tester.pumpWidget(const MyApp());
     final qrCodeView = find.byKey(const Key('qrCodeView'));
-    final defaultImage = find.descendant(
-        of: qrCodeView, matching: find.byKey(const Key('defaultImage')));
-    expect(defaultImage, findsNothing);
+    final qrCodeImage = find.descendant(
+        of: qrCodeView, matching: find.byKey(const Key('qrCodeImage')));
+    expect(qrCodeImage, findsNothing);
   });
 
   testWidgets('when entering text, it should show the text',
