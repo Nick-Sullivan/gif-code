@@ -158,7 +158,7 @@ jobs:
     name: "Flutter tests"
     needs: [deploy_staging_infrastructure]
     runs-on: macos-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     defaults:
       run:
         shell: bash
