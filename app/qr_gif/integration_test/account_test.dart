@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:qr_gif/infrastructure/cloud/amplify_auth.dart';
-import 'package:qr_gif/infrastructure/cloud/giphy_api.dart';
-import 'package:qr_gif/infrastructure/cloud/qr_code_api.dart';
-import 'package:qr_gif/infrastructure/interfaces/amplify_auth.dart';
-import 'package:qr_gif/infrastructure/interfaces/giphy_api.dart';
-import 'package:qr_gif/infrastructure/interfaces/qr_code_api.dart';
-import 'package:qr_gif/main.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
+import 'package:integration_test/integration_test.dart';
+import 'package:qr_gif/main.dart';
 import 'package:qr_gif/widgets/auth/auth_controller.dart';
 
 final getIt = GetIt.instance;
@@ -19,6 +14,7 @@ void main() {
   late AuthController authController;
 
   setUpAll(() async {
+    IntegrationTestWidgetsFlutterBinding.ensureInitialized();
     await dotenv.load(fileName: ".env.automated");
     username = dotenv.env['AUTOMATED_TESTER_USERNAME']!;
     password = dotenv.env['AUTOMATED_TESTER_PASSWORD']!;
