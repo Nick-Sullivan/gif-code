@@ -4,6 +4,6 @@ variable "environment" {
 }
 
 variable "giphy_api_key" {
-  type = string
+  type      = string
   sensitive = true
 }

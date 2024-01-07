@@ -26,6 +26,7 @@ locals {
   prefix_lower     = "gif-code-${lower(var.environment)}"
   prefix_parameter = "/GifCode/${title(var.environment)}"
   aws_account_id   = data.aws_caller_identity.identity.account_id
+  automated_tester_username = "nick.dave.sullivan+testing@gmail.com"
   root_dir         = "${path.root}/../.."
   lambda_dir       = "${local.root_dir}/lambda"
 

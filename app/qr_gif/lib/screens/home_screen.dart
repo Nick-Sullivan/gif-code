@@ -2,18 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:qr_gif/infrastructure/interfaces/giphy_api.dart';
 import 'package:qr_gif/infrastructure/interfaces/qr_code_api.dart';
+import 'package:qr_gif/screens/account_screen.dart';
+import 'package:qr_gif/widgets/auth/auth_controller.dart';
 import 'package:qr_gif/widgets/qr_code/qr_code_controller.dart';
 import 'package:qr_gif/widgets/qr_code/qr_code_view.dart';
 
 final getIt = GetIt.instance;
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  final AuthController authController;
+
+  const HomeScreen({super.key, required this.authController});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final IQrCodeApiInteractor qrApi = getIt<IQrCodeApiInteractor>();
   final IGiphyApiInteractor giphyApi = getIt<IGiphyApiInteractor>();
   final QrCodeController qrCodeController = QrCodeController();
   final TextEditingController textController = TextEditingController();
-
-  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +35,31 @@ class HomeScreen extends StatelessWidget {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      title: const Text('GIF Code'),
+      title: const Text('Generator'),
       backgroundColor: Theme.of(context).primaryColor,
+      actions: [
+        PopupMenuButton(
+          key: const Key("popupMenuButton"),
+          itemBuilder: (_) {
+            var popMenus = [
+              const PopupMenuItem(
+                value: 0,
+                child: Text("Account", key: Key("accountMenuButton")),
+              ),
+            ];
+            return popMenus;
+          },
+          onSelected: ((value) {
+            if (value == 0) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AccountScreen(
+                          authController: widget.authController)));
+            }
+          }),
+        ),
+      ],
     );
   }
 
