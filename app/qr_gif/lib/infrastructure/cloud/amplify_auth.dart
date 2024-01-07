@@ -104,7 +104,6 @@ class AmplifyAuthenticator implements IAmplifyAuthenticator {
         // _handleCodeDelivery(resendResult.codeDeliveryDetails);
         break;
       case AuthSignInStep.done:
-        safePrint('Sign in is complete');
         break;
     }
   }

@@ -44,7 +44,6 @@ Future<void> setupAmplify(AuthController authController) async {
     }
     // await widget.authController.signInUserIfCredentialsSaved();
     await authController.loadUserDetailsIfSignedIn();
-    safePrint('Successfully configured');
   } on Exception catch (e) {
     safePrint('An error occurred configuring Amplify: $e');
   }

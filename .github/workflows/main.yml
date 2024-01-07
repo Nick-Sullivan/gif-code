@@ -247,7 +247,10 @@ jobs:
 
       - name: Run tests
         working-directory: app/qr_gif
-        run: flutter test -d windows integration_test --dart-define=IS_TESTING=true
+        run: |
+          flutter config --enable-windows-desktop
+          flutter test -d windows integration_test/gif_test.dart --dart-define=IS_TESTING=true
+          flutter test -d windows integration_test/account_test.dart --dart-define=IS_TESTING=true
 
   build_staging_app:
     name: "Build staging app"

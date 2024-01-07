@@ -30,7 +30,9 @@ function Build() {
 
 function Test() {
     Write-Output "Testing app"
-    flutter test integration_test --dart-define=IS_TESTING=true 
+    flutter config --enable-windows-desktop
+    flutter test -d windows integration_test/gif_test.dart --dart-define=IS_TESTING=true
+    flutter test -d windows integration_test/account_test.dart --dart-define=IS_TESTING=true
 }
 
 switch ($command) {

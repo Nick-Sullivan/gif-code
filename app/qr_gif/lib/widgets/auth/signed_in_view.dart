@@ -21,8 +21,8 @@ class _SignedInViewState extends State<SignedInView> {
                 children: <Widget>[
                   Text("Hello ${widget.controller.userEmail}"),
                   TextButton(
-                    key: const Key("logOutButton"),
-                    child: const Text('LOG OUT'),
+                    key: const Key("signOutButton"),
+                    child: const Text('SIGN OUT'),
                     onPressed: () async {
                       widget.controller.signOutUser();
                     },
