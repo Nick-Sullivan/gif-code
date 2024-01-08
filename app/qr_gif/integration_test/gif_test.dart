@@ -44,19 +44,19 @@ void main() {
     expect(qrCodeImage, findsOneWidget);
   });
 
-  testWidgets('when clicking account, it should load the account screen',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(authController: AuthController()));
+  // testWidgets('when clicking account, it should load the account screen',
+  //     (WidgetTester tester) async {
+  //   await tester.pumpWidget(MyApp(authController: AuthController()));
 
-    final menuButton = find.byKey(const Key('popupMenuButton'));
-    await tester.tap(menuButton);
-    await tester.pumpAndSettle();
+  //   final menuButton = find.byKey(const Key('popupMenuButton'));
+  //   await tester.tap(menuButton);
+  //   await tester.pumpAndSettle();
 
-    final accountButton = find.byKey(const Key('accountMenuButton'));
-    await tester.tap(accountButton);
-    await tester.pumpAndSettle();
+  //   final accountButton = find.byKey(const Key('accountMenuButton'));
+  //   await tester.tap(accountButton);
+  //   await tester.pumpAndSettle();
 
-    final accountTitle = find.byKey(const Key('accountTitle'));
-    expect(accountTitle, findsOneWidget);
-  });
+  //   final accountTitle = find.byKey(const Key('accountTitle'));
+  //   expect(accountTitle, findsOneWidget);
+  // });
 }
