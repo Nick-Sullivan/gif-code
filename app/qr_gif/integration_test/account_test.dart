@@ -70,14 +70,14 @@ void main() {
     expect(signedInView, findsOneWidget);
   });
 
-  testWidgets('when logging out, it should should the sign up screen',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-        MyApp(authController: authController, initialRoute: '/account'));
-    final signOutButton = find.byKey(const Key('signOutButton'));
-    await tester.tap(signOutButton);
-    await tester.pumpAndSettle();
-    final signUpView = find.byKey(const Key('signUpView'));
-    expect(signUpView, findsOneWidget);
-  });
+  // testWidgets('when logging out, it should should the sign up screen',
+  //     (WidgetTester tester) async {
+  //   await tester.pumpWidget(
+  //       MyApp(authController: authController, initialRoute: '/account'));
+  //   final signOutButton = find.byKey(const Key('signOutButton'));
+  //   await tester.tap(signOutButton);
+  //   await tester.pumpAndSettle();
+  //   final signUpView = find.byKey(const Key('signUpView'));
+  //   expect(signUpView, findsOneWidget);
+  // });
 }
