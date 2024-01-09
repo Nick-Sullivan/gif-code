@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:qr_gif/widgets/auth/auth_controller.dart';
 
-class SignedInView extends StatefulWidget {
+class SignedInView extends StatelessWidget {
   final AuthController controller;
   const SignedInView({super.key, required this.controller});
 
   @override
-  State<SignedInView> createState() => _SignedInViewState();
-}
-
-class _SignedInViewState extends State<SignedInView> {
-  @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-        listenable: widget.controller,
+        listenable: controller,
         builder: (BuildContext context, Widget? child) {
           return Center(
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  Text("Hello ${widget.controller.userEmail}"),
+                  Text("Hello ${controller.userEmail}"),
                   TextButton(
                     key: const Key("signOutButton"),
                     child: const Text('SIGN OUT'),
                     onPressed: () async {
-                      widget.controller.signOutUser();
+                      controller.signOutUser();
                     },
                   ),
                 ],

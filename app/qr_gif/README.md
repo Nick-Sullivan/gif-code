@@ -29,3 +29,12 @@ If you want to create a different environment, change `dev` to any unique string
 cd terraform/infrastructure
 terraform destroy
 ```
+
+## Dev notes
+
+- Uses MVVM style
+  - Models hold data
+  - ViewModels (named controllers) update data, and notify views
+  - Views display widgets and listen to ViewModels
+- If controller is a singleton, pass using GetIt
+- if controller is not, pass via constructor

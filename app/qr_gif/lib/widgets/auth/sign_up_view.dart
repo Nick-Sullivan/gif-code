@@ -1,38 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:qr_gif/widgets/auth/auth_controller.dart';
 
-class SignUpView extends StatefulWidget {
-  final AuthController controller;
-  const SignUpView({super.key, required this.controller});
-
-  @override
-  State<SignUpView> createState() => _SignUpViewState();
-}
-
-class _SignUpViewState extends State<SignUpView> {
+class SignUpView extends StatelessWidget {
+  final authController = GetIt.instance<AuthController>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmationCodeController =
       TextEditingController();
 
+  SignUpView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-        listenable: widget.controller,
+        listenable: authController,
         builder: (BuildContext context, Widget? child) {
-          if (widget.controller.errorMessage != null) {
-            final text = widget.controller.errorMessage!;
+          if (authController.errorMessage != null) {
+            final text = authController.errorMessage!;
             WidgetsBinding.instance.addPostFrameCallback(
                 (_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(text),
                       key: const Key('errorMessage'),
                     )));
-            widget.controller.errorMessage = null;
+            authController.errorMessage = null;
           }
-          if (widget.controller.isLoading) {
+          if (authController.isLoading) {
             return buildLoading();
           }
-          if (widget.controller.isAwaitingConfirmation) {
+          if (authController.isAwaitingConfirmation) {
             return buildAwaitingConfirmation();
           }
           return buildSignUp();
@@ -75,16 +71,16 @@ class _SignUpViewState extends State<SignUpView> {
               key: const Key("signInButton"),
               child: const Text('SIGN IN'),
               onPressed: () async {
-                widget.controller
-                    .signInUser(emailController.text, passwordController.text);
+                authController.signInUser(
+                    emailController.text, passwordController.text);
               },
             ),
             TextButton(
               key: const Key("signUpButton"),
               child: const Text('SIGN UP'),
               onPressed: () async {
-                widget.controller
-                    .signUpUser(emailController.text, passwordController.text);
+                authController.signUpUser(
+                    emailController.text, passwordController.text);
               },
             ),
           ],
@@ -116,7 +112,7 @@ class _SignUpViewState extends State<SignUpView> {
               key: const Key("confirmationCodeButton"),
               child: const Text('CONFIRM SIGN UP'),
               onPressed: () async {
-                widget.controller.confirmUser(emailController.text,
+                authController.confirmUser(emailController.text,
                     passwordController.text, confirmationCodeController.text);
               },
             ),

@@ -7,22 +7,14 @@ import 'package:qr_gif/widgets/auth/auth_controller.dart';
 import 'package:qr_gif/widgets/qr_code/qr_code_controller.dart';
 import 'package:qr_gif/widgets/qr_code/qr_code_view.dart';
 
-final getIt = GetIt.instance;
+class HomeScreen extends StatelessWidget {
+  final authController = GetIt.instance<AuthController>();
+  final qrApi = GetIt.instance<IQrCodeApiInteractor>();
+  final giphyApi = GetIt.instance<IGiphyApiInteractor>();
+  final qrCodeController = QrCodeController();
+  final textController = TextEditingController();
 
-class HomeScreen extends StatefulWidget {
-  final AuthController authController;
-
-  const HomeScreen({super.key, required this.authController});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final IQrCodeApiInteractor qrApi = getIt<IQrCodeApiInteractor>();
-  final IGiphyApiInteractor giphyApi = getIt<IGiphyApiInteractor>();
-  final QrCodeController qrCodeController = QrCodeController();
-  final TextEditingController textController = TextEditingController();
+  HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           onSelected: ((value) {
             if (value == 0) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AccountScreen(
-                          authController: widget.authController)));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AccountScreen()));
             }
           }),
         ),

@@ -1,15 +1,14 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:qr_gif/amplifyconfiguration.dart';
 import 'package:qr_gif/infrastructure/interfaces/amplify_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-final getIt = GetIt.instance;
 
 class AuthController extends ChangeNotifier {
-  final IAmplifyAuthenticator auth = getIt<IAmplifyAuthenticator>();
+  final auth = GetIt.instance.get<IAmplifyAuthenticator>();
 
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool _isAwaitingConfirmation = false;
   bool _isSignedIn = false;
   String? _email;
@@ -44,6 +43,22 @@ class AuthController extends ChangeNotifier {
     _errorMessage = value;
     if (value != null) {
       notifyListeners();
+    }
+  }
+
+  Future<void> configureAmplify() async {
+    try {
+      final auth = AmplifyAuthCognito();
+      await Amplify.addPlugin(auth);
+      try {
+        await Amplify.configure(amplifyconfig);
+      } on AmplifyAlreadyConfiguredException catch (e) {
+        debugPrint(e.message);
+      }
+      await loadUserDetailsIfSignedIn();
+      safePrint('Successfully configured');
+    } on Exception catch (e) {
+      safePrint('An error occurred configuring Amplify: $e');
     }
   }
 
@@ -89,25 +104,16 @@ class AuthController extends ChangeNotifier {
     isLoading = false;
   }
 
-  // Future<void> signInUserIfCredentialsSaved() async {
-  //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final email = prefs.getString('email');
-  //   final password = prefs.getString('password');
-  //   if (email == null || password == null) {
-  //     return;
-  //   }
-  //   await auth.signInUser(email, password);
-  //   userEmail = email;
-  //   isSignedIn = true;
-  // }
-
   Future<void> loadUserDetailsIfSignedIn() async {
-    final isSignedIn = await auth.isUserSignedIn();
-    if (!isSignedIn) {
+    isLoading = true;
+    await Future.delayed(const Duration(seconds: 5));
+    final isIn = await auth.isUserSignedIn();
+    if (!isIn) {
       return;
     }
     userEmail = await auth.getCurrentUserEmail();
-    this.isSignedIn = isSignedIn;
+    isSignedIn = isIn;
+    isLoading = false;
   }
 
   Future<void> signOutUser() async {
@@ -116,17 +122,5 @@ class AuthController extends ChangeNotifier {
     // await _clearCredentials();
     isSignedIn = false;
     isLoading = false;
-  }
-
-  Future<void> _saveCredentials(String email, String password) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('email', email);
-    await prefs.setString('password', password);
-  }
-
-  Future<void> _clearCredentials() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('email');
-    await prefs.remove('password');
   }
 }

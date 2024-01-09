@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:qr_gif/main.dart';
-import 'package:qr_gif/widgets/auth/auth_controller.dart';
 
 final getIt = GetIt.instance;
 
@@ -15,7 +14,7 @@ void main() {
 
   testWidgets('when opened, it should not show a default image',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(authController: AuthController()));
+    await tester.pumpWidget(MyApp());
     final qrCodeView = find.byKey(const Key('qrCodeView'));
     final qrCodeImage = find.descendant(
         of: qrCodeView, matching: find.byKey(const Key('qrCodeImage')));
@@ -24,7 +23,7 @@ void main() {
 
   testWidgets('when entering text, it should show the text',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(authController: AuthController()));
+    await tester.pumpWidget(MyApp(configure: false));
     expect(find.text('Enter text'), findsOneWidget);
     final qrTextInput = find.byKey(const Key('qrText'));
     await tester.enterText(qrTextInput, "My text");
@@ -34,7 +33,7 @@ void main() {
 
   testWidgets('when clicking randomise, it should create a gif',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(authController: AuthController()));
+    await tester.pumpWidget(MyApp(configure: false));
     final gifInput = find.byKey(const Key('randomGifButton'));
     await tester.tap(gifInput);
     await tester.pumpAndSettle();
@@ -46,7 +45,7 @@ void main() {
 
   testWidgets('when clicking account, it should load the account screen',
       (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp(authController: AuthController()));
+    await tester.pumpWidget(MyApp(configure: false));
 
     final menuButton = find.byKey(const Key('popupMenuButton'));
     await tester.tap(menuButton);

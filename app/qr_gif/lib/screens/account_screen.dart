@@ -4,18 +4,11 @@ import 'package:qr_gif/widgets/auth/auth_controller.dart';
 import 'package:qr_gif/widgets/auth/sign_up_view.dart';
 import 'package:qr_gif/widgets/auth/signed_in_view.dart';
 
-final getIt = GetIt.instance;
+class AccountScreen extends StatelessWidget {
+  final authController = GetIt.instance<AuthController>();
 
-class AccountScreen extends StatefulWidget {
-  final AuthController authController;
+  AccountScreen({super.key});
 
-  const AccountScreen({super.key, required this.authController});
-
-  @override
-  State<AccountScreen> createState() => _AccountScreenState();
-}
-
-class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,16 +27,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
   Widget buildBody(BuildContext context) {
     return ListenableBuilder(
-        listenable: widget.authController,
+        listenable: authController,
         builder: (BuildContext context, Widget? child) {
-          if (widget.authController.isSignedIn) {
+          if (authController.isSignedIn) {
             return SignedInView(
-                controller: widget.authController,
-                key: const Key('signedInView'));
+                controller: authController, key: const Key('signedInView'));
           } else {
-            return SignUpView(
-                controller: widget.authController,
-                key: const Key('signUpView'));
+            return SignUpView(key: const Key('signUpView'));
           }
         });
   }
