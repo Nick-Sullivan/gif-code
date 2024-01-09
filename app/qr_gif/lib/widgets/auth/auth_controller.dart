@@ -106,7 +106,6 @@ class AuthController extends ChangeNotifier {
 
   Future<void> loadUserDetailsIfSignedIn() async {
     isLoading = true;
-    await Future.delayed(const Duration(seconds: 5));
     final isIn = await auth.isUserSignedIn();
     if (!isIn) {
       return;
