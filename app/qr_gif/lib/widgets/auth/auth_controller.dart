@@ -8,7 +8,7 @@ import 'package:qr_gif/infrastructure/interfaces/amplify_auth.dart';
 class AuthController extends ChangeNotifier {
   final auth = GetIt.instance.get<IAmplifyAuthenticator>();
 
-  bool _isLoading = true;
+  bool _isLoading = false;
   bool _isAwaitingConfirmation = false;
   bool _isSignedIn = false;
   String? _email;
@@ -108,6 +108,7 @@ class AuthController extends ChangeNotifier {
     isLoading = true;
     final isIn = await auth.isUserSignedIn();
     if (!isIn) {
+      isLoading = false;
       return;
     }
     userEmail = await auth.getCurrentUserEmail();
