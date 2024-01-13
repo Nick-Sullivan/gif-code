@@ -57,15 +57,16 @@ def _create_qr_gif(request_body: Dict) -> Image:
     combined = qr_gif_combiner.combine(gif=gif, qr=qr.image, size=size_qr*size_mult, color=ColorMode.COLOR)
 
     print(f'{time.time() - start:.2f} Upload to S3')
-    key = s3_interactor.generate_unique_key()
-    s3_interactor.upload_to_s3(combined.getvalue(), key)
+    qrId = str(uuid.uuid4()),
+    s3Key = f'temp/{qrId}'
+    s3_interactor.upload_to_s3(combined.getvalue(), s3Key)
 
     print(f'{time.time() - start:.2f} Generating presigned URL')
-    url = s3_interactor.generate_presigned_url(key)
+    url = s3_interactor.generate_presigned_url(s3Key)
 
     print(f'{time.time() - start:.2f} Populating response body')
     response_body = {
-        'id': str(uuid.uuid4()),
+        'id': qrId,
         'url': url,
         'text': request.text,
     }

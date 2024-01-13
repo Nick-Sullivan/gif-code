@@ -1,5 +1,3 @@
-import uuid
-
 
 class S3Interactor:
 
@@ -25,7 +23,3 @@ class S3Interactor:
             ExpiresIn=1000
         )
         return url
-
-    def generate_unique_key(self) -> str:
-        image_id = str(uuid.uuid4())
-        return f'temp/{image_id}'

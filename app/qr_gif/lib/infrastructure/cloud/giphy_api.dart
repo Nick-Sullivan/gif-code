@@ -15,7 +15,7 @@ class GiphyApiInteractor implements IGiphyApiInteractor {
         type: GiphyType.gifs,
         lang: GiphyLanguage.english,
         rating: GiphyRating.pg13,
-        showAttribution: false,
+        showAttribution: true,
         showPreview: false,
         showTypeSwitcher: false);
   }
