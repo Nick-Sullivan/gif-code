@@ -3,6 +3,7 @@ import 'package:qr_gif/widgets/qr_code/qr_code_controller.dart';
 
 class QrCodeView extends StatelessWidget {
   final QrCodeController controller;
+
   const QrCodeView({super.key, required this.controller});
 
   @override
@@ -10,13 +11,31 @@ class QrCodeView extends StatelessWidget {
     return ListenableBuilder(
         listenable: controller,
         builder: (BuildContext context, Widget? child) {
+          if (controller.notificationMessage != null) {
+            final text = controller.notificationMessage!;
+            WidgetsBinding.instance.addPostFrameCallback(
+                (_) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(text),
+                      key: const Key('notificationMessage'),
+                    )));
+            controller.clearNotification();
+          }
           if (controller.isLoading) {
             return const CircularProgressIndicator(key: Key('loadingImage'));
           }
-          if (controller.qrCode == null) {
-            return const SizedBox();
+          if (controller.hasLoaded) {
+            return Column(children: <Widget>[
+              controller.qrCode!.image,
+              TextButton(
+                key: const Key("saveQrButton"),
+                child: const Text('SAVE'),
+                onPressed: () async {
+                  controller.save(controller.qrCode!);
+                },
+              )
+            ]);
           }
-          return controller.qrCode!.image;
+          return const SizedBox();
         });
   }
 }

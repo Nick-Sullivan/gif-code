@@ -17,11 +17,14 @@ if not is_cicd:
 
 env = os.environ['ENVIRONMENT']
 
-prefix = f'/GifCode/{env.capitalize()}'
-parameter_names = {
-    f'{prefix}/ApiGateway/Url': 'API_GATEWAY_URL',
-}
-ssm_client = boto3.client('ssm')
-parameters = ssm_client.get_parameters(Names=list(parameter_names), WithDecryption=True)
-for parameter in parameters['Parameters']:
-    os.environ[parameter_names[parameter['Name']]] = parameter['Value']
+if os.environ['USE_LOCAL_INFRA'] == 'True':
+    os.environ['API_GATEWAY_URL'] = 'http://127.0.0.1:8000'
+else:
+    prefix = f'/GifCode/{env.capitalize()}'
+    parameter_names = {
+        f'{prefix}/ApiGateway/Url': 'API_GATEWAY_URL',
+    }
+    ssm_client = boto3.client('ssm')
+    parameters = ssm_client.get_parameters(Names=list(parameter_names), WithDecryption=True)
+    for parameter in parameters['Parameters']:
+        os.environ[parameter_names[parameter['Name']]] = parameter['Value']

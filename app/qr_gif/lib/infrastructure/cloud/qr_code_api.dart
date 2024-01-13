@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:qr_gif/infrastructure/interfaces/qr_code_api.dart';
 import 'package:qr_gif/widgets/qr_code/qr_code_model.dart';
@@ -28,7 +29,6 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
   Future<QrCode> createRandom(String text) async {
     final giphyId = isTesting ? giphyIdForTesting : "";
     final uri = Uri.parse('$url/gif');
-
     final request = '''{
       "text": "$text",
       "giphy_id": "$giphyId",
@@ -44,18 +44,21 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
       throw Exception('uh oh');
     }
     final json = jsonDecode(response.body);
-    final image = await loadImageFromS3(json['url']);
-    final qr = QrCode(text: json['text'], image: image);
+    final imageBytes = await loadImageFromS3(json['url']);
+    final image = Image.memory(imageBytes, key: const Key("qrCodeImage"));
+    final qr = QrCode(
+        id: json['id'],
+        image: image,
+        imageBytes: imageBytes,
+        text: json['text']);
     return qr;
   }
 
-  Future<Image> loadImageFromS3(String url) async {
+  Future<Uint8List> loadImageFromS3(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) {
       throw Exception('uh oh');
     }
-    final image =
-        Image.memory(response.bodyBytes, key: const Key("qrCodeImage"));
-    return image;
+    return response.bodyBytes;
   }
 }

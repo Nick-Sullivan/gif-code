@@ -3,13 +3,17 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:qr_gif/infrastructure/cloud/amplify_auth.dart';
 import 'package:qr_gif/infrastructure/cloud/giphy_api.dart';
+import 'package:qr_gif/infrastructure/cloud/qr_code_store.dart';
 import 'package:qr_gif/infrastructure/cloud/qr_code_api.dart';
 import 'package:qr_gif/infrastructure/interfaces/amplify_auth.dart';
 import 'package:qr_gif/infrastructure/interfaces/giphy_api.dart';
+import 'package:qr_gif/infrastructure/interfaces/qr_code_store.dart';
 import 'package:qr_gif/infrastructure/interfaces/qr_code_api.dart';
 import 'package:qr_gif/screens/account_screen.dart';
+import 'package:qr_gif/screens/collection_list_screen.dart';
 import 'package:qr_gif/screens/home_screen.dart';
 import 'package:qr_gif/widgets/auth/auth_controller.dart';
+import 'package:qr_gif/widgets/collection/collection_controller.dart';
 
 void main() async {
   await setupSingletons();
@@ -22,8 +26,12 @@ Future<void> setupSingletons() async {
   final giphyApi = GiphyApiInteractor(apiKey: dotenv.env['GIPHY_API_KEY']!);
   GetIt.I.registerSingleton<IQrCodeApiInteractor>(qrCodeApi);
   GetIt.I.registerSingleton<IGiphyApiInteractor>(giphyApi);
+  GetIt.I.registerSingleton<IQrCodeStore>(QrCodeStore());
   GetIt.I.registerSingleton<IAmplifyAuthenticator>(AmplifyAuthenticator());
   GetIt.I.registerSingleton<AuthController>(AuthController());
+  final collectionController = CollectionController();
+  await collectionController.loadCollection();
+  GetIt.I.registerSingleton<CollectionController>(collectionController);
 }
 
 class MyApp extends StatelessWidget {
@@ -45,6 +53,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => HomeScreen(),
         '/account': (context) => AccountScreen(),
+        '/collection': (context) => CollectionListScreen(),
       },
     );
   }

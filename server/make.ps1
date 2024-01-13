@@ -74,7 +74,7 @@ switch ($command) {
         }
     }
     # Testing
-    "test-api" { 
+    "test" { 
         Test-Api
     }
     default {

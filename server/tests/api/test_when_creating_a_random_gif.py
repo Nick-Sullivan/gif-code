@@ -43,6 +43,10 @@ def test_it_returns_url(response_body):
     assert 'url' in response_body
 
 
+def test_it_returns_id(response_body):
+    assert 'id' in response_body
+    
+
 def test_image_is_gif(image):
     assert image.format == 'GIF'
 

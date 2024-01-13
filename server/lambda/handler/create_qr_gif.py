@@ -1,6 +1,6 @@
 import json
-import math
 import time
+import uuid
 from base64 import b64encode
 from typing import Dict
 
@@ -64,12 +64,10 @@ def _create_qr_gif(request_body: Dict) -> Image:
     url = s3_interactor.generate_presigned_url(key)
 
     print(f'{time.time() - start:.2f} Populating response body')
-    # b64 = b64encode(combined.getvalue())
-    # b64_str = b64.decode()
     response_body = {
-        # 'image': b64_str,
+        'id': str(uuid.uuid4()),
         'url': url,
-        'text': request.text
+        'text': request.text,
     }
     print(f'{time.time() - start:.2f} Complete')
     return response_body

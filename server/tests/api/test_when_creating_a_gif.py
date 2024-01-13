@@ -48,6 +48,10 @@ def test_it_returns_url(response_body):
     assert 'url' in response_body
 
 
+def test_it_returns_id(response_body):
+    assert 'id' in response_body
+
+
 def test_image_is_gif(image):
     assert image.format == 'GIF'
 
@@ -66,5 +70,8 @@ def test_image_mode_is_as_expected(image, expected_image):
 
 
 def test_image_looks_as_expected(image, expected_image):
+    # Uncomment this to save and view
+    # from domain_services.qr_gif_combiner import QrGifCombiner
+    # QrGifCombiner().save_gif(image, 'tests/api/actual.gif')
     diff = ImageChops.difference(image, expected_image)
     assert not diff.getbbox()

@@ -33,6 +33,12 @@ void testGifScreen() {
       final qrCodeImage = find.descendant(
           of: qrCodeView, matching: find.byKey(const Key('qrCodeImage')));
       expect(qrCodeImage, findsOneWidget);
+
+      final saveInput = find.byKey(const Key('saveQrButton'));
+      await tester.tap(saveInput);
+      await tester.pumpAndSettle();
+      final saveNotification = find.byKey(const Key('notificationMessage'));
+      expect(saveNotification, findsOneWidget);
     });
 
     testWidgets('when clicking account, it should load the account screen',
