@@ -52,8 +52,9 @@ class SignUpView extends StatelessWidget {
                   ..text = "nick.dave.sullivan@gmail.com",
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Enter username",
-                    contentPadding: EdgeInsets.all(20.0)),
+                    labelText: "Email",
+                    contentPadding: EdgeInsets.all(20.0),
+                    prefixIcon: Icon(Icons.email)),
               ),
             ),
             Container(
@@ -63,13 +64,14 @@ class SignUpView extends StatelessWidget {
                 controller: passwordController..text = "password",
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: "Enter password",
+                    labelText: "Password",
+                    prefixIcon: Icon(Icons.key),
                     contentPadding: EdgeInsets.all(20.0)),
               ),
             ),
-            TextButton(
+            ElevatedButton(
               key: const Key("signInButton"),
-              child: const Text('SIGN IN'),
+              child: const Text('Sign In'),
               onPressed: () async {
                 authController.signInUser(
                     emailController.text, passwordController.text);
@@ -77,7 +79,7 @@ class SignUpView extends StatelessWidget {
             ),
             TextButton(
               key: const Key("signUpButton"),
-              child: const Text('SIGN UP'),
+              child: const Text('Make account'),
               onPressed: () async {
                 authController.signUpUser(
                     emailController.text, passwordController.text);

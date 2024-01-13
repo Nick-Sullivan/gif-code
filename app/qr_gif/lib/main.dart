@@ -47,18 +47,55 @@ class MyApp extends StatelessWidget {
     if (configure) {
       authController.configureAmplify();
     }
-    const scheme = FlexScheme.bigStone;
     return MaterialApp(
       title: 'GIF Code',
       initialRoute: initialRoute,
-      theme: FlexThemeData.light(scheme: scheme),
-      darkTheme: FlexThemeData.dark(scheme: scheme),
-      color: Colors.black,
+      theme: createLightTheme(),
+      darkTheme: createDarkTheme(),
       routes: {
         '/home': (context) => HomeScreen(),
         '/account': (context) => AccountScreen(),
         '/collection': (context) => CollectionListScreen(),
       },
+    );
+  }
+
+  ThemeData createLightTheme() {
+    return FlexThemeData.light(
+      scheme: FlexScheme.damask,
+      surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+      blendLevel: 7,
+      subThemesData: const FlexSubThemesData(
+        blendOnLevel: 10,
+        blendOnColors: false,
+        useTextTheme: true,
+        useM2StyleDividerInM3: true,
+        useInputDecoratorThemeInDialogs: true,
+      ),
+      visualDensity: FlexColorScheme.comfortablePlatformDensity,
+      useMaterial3: true,
+      swapLegacyOnMaterial3: true,
+      // To use the Playground font, add GoogleFonts package and uncomment
+      // fontFamily: GoogleFonts.notoSans().fontFamily,
+    );
+  }
+
+  ThemeData createDarkTheme() {
+    return FlexThemeData.dark(
+      scheme: FlexScheme.damask,
+      surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
+      blendLevel: 13,
+      subThemesData: const FlexSubThemesData(
+        blendOnLevel: 20,
+        useTextTheme: true,
+        useM2StyleDividerInM3: true,
+        useInputDecoratorThemeInDialogs: true,
+      ),
+      visualDensity: FlexColorScheme.comfortablePlatformDensity,
+      useMaterial3: true,
+      swapLegacyOnMaterial3: true,
+      // To use the Playground font, add GoogleFonts package and uncomment
+      // fontFamily: GoogleFonts.notoSans().fontFamily,
     );
   }
 }

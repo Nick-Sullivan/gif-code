@@ -26,9 +26,10 @@ class QrCodeView extends StatelessWidget {
           if (controller.hasLoaded) {
             return Column(children: <Widget>[
               controller.qrCode!.image,
-              TextButton(
+              ElevatedButton.icon(
                 key: const Key("saveQrButton"),
-                child: const Text('SAVE'),
+                icon: const Icon(Icons.save),
+                label: const Text('Save to Collection'),
                 onPressed: () async {
                   controller.save(controller.qrCode!);
                 },

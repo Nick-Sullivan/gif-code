@@ -18,7 +18,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: buildAppBar(context),
       body: buildBody(context),
     );
@@ -27,7 +26,6 @@ class HomeScreen extends StatelessWidget {
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
       title: const Text('Generator'),
-      backgroundColor: Theme.of(context).primaryColor,
       actions: [
         PopupMenuButton(
           key: const Key("popupMenuButton"),
@@ -70,16 +68,18 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: TextField(
                 key: const Key("qrText"),
-                controller: textController..text = "Enter your QR text here",
+                controller: textController..text = "",
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Enter text",
+                    prefixIcon: Icon(Icons.qr_code_2),
                     contentPadding: EdgeInsets.all(20.0)),
               ),
             ),
-            TextButton(
+            ElevatedButton.icon(
               key: const Key("gifButton"),
-              child: const Text('SELECT GIF'),
+              icon: const Icon(Icons.image),
+              label: const Text('Select from GIPHY'),
               onPressed: () async {
                 final gif = await giphyApi.create(context);
                 if (gif != null) {
@@ -87,9 +87,10 @@ class HomeScreen extends StatelessWidget {
                 }
               },
             ),
-            TextButton(
+            ElevatedButton.icon(
               key: const Key("randomGifButton"),
-              child: const Text('CREATE RANDOM GIF'),
+              icon: const Icon(Icons.question_mark),
+              label: const Text('Random'),
               onPressed: () async {
                 qrCodeController.createRandom(textController.text);
               },

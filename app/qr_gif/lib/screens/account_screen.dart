@@ -12,7 +12,6 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: buildAppBar(context),
       body: buildBody(context),
     );
@@ -21,7 +20,6 @@ class AccountScreen extends StatelessWidget {
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
       title: const Text('Account', key: Key("accountTitle")),
-      backgroundColor: Theme.of(context).primaryColor,
     );
   }
 

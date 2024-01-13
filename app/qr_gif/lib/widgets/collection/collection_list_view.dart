@@ -27,7 +27,7 @@ class CollectionListView extends StatelessWidget {
   Widget _buildItem(BuildContext context, int index) {
     final qrId = controller.qrIds[index];
     return ListTile(
-      title: Text("Default name"),
+      title: const Text("Default name"),
       trailing: const Icon(Icons.arrow_forward),
       onTap: () async {
         controller.setSelectedId(qrId);
