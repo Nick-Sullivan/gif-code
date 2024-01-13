@@ -23,6 +23,7 @@ dependencies:
   amplify_flutter: ^1.0.0
   amplify_auth_cognito: ^1.0.0
   path_provider: ^2.1.2
+  flex_color_scheme: ^7.2.0
 
 dev_dependencies:
   flutter_test:

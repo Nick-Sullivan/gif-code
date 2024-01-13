@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
@@ -46,9 +47,12 @@ class MyApp extends StatelessWidget {
     if (configure) {
       authController.configureAmplify();
     }
+    const scheme = FlexScheme.bigStone;
     return MaterialApp(
       title: 'GIF Code',
       initialRoute: initialRoute,
+      theme: FlexThemeData.light(scheme: scheme),
+      darkTheme: FlexThemeData.dark(scheme: scheme),
       color: Colors.black,
       routes: {
         '/home': (context) => HomeScreen(),
