@@ -57,7 +57,7 @@ def _create_qr_gif(request_body: Dict) -> Image:
     combined = qr_gif_combiner.combine(gif=gif, qr=qr.image, size=size_qr*size_mult, color=ColorMode.COLOR)
 
     print(f'{time.time() - start:.2f} Upload to S3')
-    qrId = str(uuid.uuid4()),
+    qrId = str(uuid.uuid4())
     s3Key = f'temp/{qrId}'
     s3_interactor.upload_to_s3(combined.getvalue(), s3Key)
 
