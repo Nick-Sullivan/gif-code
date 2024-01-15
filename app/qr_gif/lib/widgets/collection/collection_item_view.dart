@@ -16,36 +16,6 @@ class CollectionItemView extends StatelessWidget {
           }
           return Column(children: <Widget>[
             controller.selectedQrCode!.image,
-            ElevatedButton.icon(
-              label: const Text("Delete"),
-              key: const Key('deleteButton'),
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                showDialog<String>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                          title: const Text('Confirm delete?'),
-                          content: const Text('This action cannot be undone.'),
-                          actions: [
-                            TextButton(
-                              key: const Key('confirmDeleteButton'),
-                              child: const Text('Delete'),
-                              onPressed: () {
-                                controller.deleteSelectedQrCode();
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            TextButton(
-                              child: const Text('Cancel'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ));
-              },
-            ),
           ]);
         });
   }

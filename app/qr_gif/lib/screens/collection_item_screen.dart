@@ -16,9 +16,45 @@ class CollectionItemScreen extends StatelessWidget {
   }
 
   AppBar buildAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(collectionController.selectedQrCode!.text),
-    );
+    return AppBar(title: const Text(""), actions: [
+      PopupMenuButton(
+          key: const Key("menuButton"),
+          itemBuilder: (_) {
+            var popMenus = [
+              const PopupMenuItem(
+                  value: 0,
+                  child: Row(children: [Icon(Icons.delete), Text("Delete")]))
+            ];
+            return popMenus;
+          },
+          onSelected: ((value) {
+            if (value == 0) {
+              showDialog<String>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text('Delete?'),
+                        content: const Text('This action cannot be undone.'),
+                        actions: [
+                          TextButton(
+                            key: const Key('confirmDeleteButton'),
+                            child: const Text('Delete'),
+                            onPressed: () {
+                              collectionController.deleteSelectedQrCode();
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Cancel'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      ));
+            }
+          })),
+    ]);
   }
 
   Widget buildBody(BuildContext context) {

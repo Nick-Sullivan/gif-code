@@ -29,7 +29,7 @@ class QrCodeView extends StatelessWidget {
               ElevatedButton.icon(
                 key: const Key("saveQrButton"),
                 icon: const Icon(Icons.save),
-                label: const Text('Save to Collection'),
+                label: const Text('Save'),
                 onPressed: () async {
                   controller.save(controller.qrCode!);
                 },

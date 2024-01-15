@@ -37,7 +37,7 @@ class QrCodeController extends ChangeNotifier {
 
   Future<void> save(QrCode qr) async {
     await imageStore.save(qr);
-    _notificationMessage = "Image saved";
+    _notificationMessage = "Saved to your collection";
     notifyListeners();
   }
 

@@ -23,7 +23,11 @@ void testCollectionItemScreen() {
       await tester.tap(item);
       await tester.pumpAndSettle();
 
-      final deleteButton = find.byKey(const Key('deleteButton'));
+      final menuButton = find.byKey(const Key('menuButton'));
+      await tester.tap(menuButton);
+      await tester.pumpAndSettle();
+
+      final deleteButton = find.text('Delete');
       await tester.tap(deleteButton);
       await tester.pumpAndSettle();
 
