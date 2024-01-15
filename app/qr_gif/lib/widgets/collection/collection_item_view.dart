@@ -16,9 +16,9 @@ class CollectionItemView extends StatelessWidget {
           }
           return Column(children: <Widget>[
             controller.selectedQrCode!.image,
-            IconButton(
+            ElevatedButton.icon(
+              label: const Text("Delete"),
               key: const Key('deleteButton'),
-              iconSize: 50,
               icon: const Icon(Icons.delete),
               onPressed: () {
                 showDialog<String>(

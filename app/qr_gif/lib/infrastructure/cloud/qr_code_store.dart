@@ -1,6 +1,5 @@
-import 'package:flutter/widgets.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import 'package:qr_gif/infrastructure/interfaces/qr_code_store.dart';
 import 'package:qr_gif/widgets/qr_code/qr_code_model.dart';
 
@@ -10,32 +9,32 @@ class QrCodeStore implements IQrCodeStore {
   final List<String> _qrIds = <String>[];
 
   @override
-  Future<void> save(QrCode qrCode) async {
-    final dir = await getDirectory();
-    if (!dir.existsSync()) {
-      dir.create();
-    }
-    final file = File("${dir.path}/${qrCode.id}.gif");
-
-    await file.writeAsBytes(qrCode.imageBytes);
-    _qrCodesById[qrCode.id] = qrCode;
-    if (!_qrIds.contains(qrCode.id)) {
-      _qrIds.add(qrCode.id);
-    }
-  }
-
-  @override
   Future<List<String>> loadSavedQrCodeIds() async {
     final dir = await getDirectory();
     if (!dir.existsSync()) {
+      dir.create();
       return <String>[];
     }
     final files = await dir.list().toList();
     _qrIds.clear();
     for (final file in files) {
-      _qrIds.add(getIdFromPath(file.path));
+      final qrId = getIdFromPath(file.path);
+      if (!_qrIds.contains(qrId)) {
+        _qrIds.add(qrId);
+      }
     }
     return _qrIds;
+  }
+
+  @override
+  Future<QrCode> loadQrCode(String qrCodeId) async {
+    final fileImage = await getImageFile(qrCodeId);
+    final fileMeta = await getMetaFile(qrCodeId);
+    final imageBytes = await fileImage.readAsBytes();
+    final imageMeta = await fileMeta.readAsBytes();
+    final qrCode = QrCode.fromSerialised(imageMeta, imageBytes);
+    _qrCodesById[qrCodeId] = qrCode;
+    return qrCode;
   }
 
   @override
@@ -44,22 +43,20 @@ class QrCodeStore implements IQrCodeStore {
   }
 
   @override
-  Future<QrCode> loadQrCode(String qrCodeId) async {
-    final dir = await getDirectory();
-    final file = File("${dir.path}/$qrCodeId.gif");
-    final imageBytes = await file.readAsBytes();
-    final qrCode = QrCode(
-        id: qrCodeId,
-        image: Image.memory(imageBytes, key: const Key("qrCodeImage")),
-        imageBytes: imageBytes,
-        text: "i dont know");
-    _qrCodesById[qrCodeId] = qrCode;
-    return qrCode;
+  QrCode getQrCode(String qrCodeId) {
+    return _qrCodesById[qrCodeId]!;
   }
 
   @override
-  QrCode getQrCode(String qrCodeId) {
-    return _qrCodesById[qrCodeId]!;
+  Future<void> save(QrCode qrCode) async {
+    final fileImage = await getImageFile(qrCode.id);
+    final fileMeta = await getMetaFile(qrCode.id);
+    await fileImage.writeAsBytes(qrCode.imageBytes);
+    await fileMeta.writeAsBytes(qrCode.serialiseMetaData());
+    _qrCodesById[qrCode.id] = qrCode;
+    if (!_qrIds.contains(qrCode.id)) {
+      _qrIds.add(qrCode.id);
+    }
   }
 
   @override
@@ -69,9 +66,10 @@ class QrCodeStore implements IQrCodeStore {
 
   @override
   Future<void> deleteQrCode(String qrCodeId) async {
-    final dir = await getDirectory();
-    final file = File("${dir.path}/$qrCodeId.gif");
-    await file.delete();
+    final fileImage = await getImageFile(qrCodeId);
+    final fileMeta = await getMetaFile(qrCodeId);
+    await fileImage.delete();
+    await fileMeta.delete();
     _qrIds.removeWhere((id) => id == qrCodeId);
     _qrCodesById.remove(qrCodeId);
   }
@@ -86,5 +84,15 @@ class QrCodeStore implements IQrCodeStore {
 
   String getIdFromPath(String path) {
     return path.split("/").last.split("\\").last.split(".").first;
+  }
+
+  Future<File> getImageFile(String qrId) async {
+    final dir = await getDirectory();
+    return File("${dir.path}/$qrId.gif");
+  }
+
+  Future<File> getMetaFile(String qrId) async {
+    final dir = await getDirectory();
+    return File("${dir.path}/$qrId.meta");
   }
 }

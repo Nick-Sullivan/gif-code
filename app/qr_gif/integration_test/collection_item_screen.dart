@@ -7,8 +7,8 @@ void testCollectionItemScreen() {
     testWidgets('when opening, it should show the QR code',
         (WidgetTester tester) async {
       await tester
-          .pumpWidget(MyApp(configure: false, initialRoute: '/collection'));
-      final item = find.text('Default name').first;
+          .pumpWidget(MyApp(configure: false, initialRoute: '/collect'));
+      final item = find.text('My text').first;
       await tester.tap(item);
       await tester.pumpAndSettle();
       final qrCodeImage = find.byKey(const Key('qrCodeImage'));
@@ -18,8 +18,8 @@ void testCollectionItemScreen() {
     testWidgets('when deleting, it should return to the list screen',
         (WidgetTester tester) async {
       await tester
-          .pumpWidget(MyApp(configure: false, initialRoute: '/collection'));
-      final item = find.text('Default name').first;
+          .pumpWidget(MyApp(configure: false, initialRoute: '/collect'));
+      final item = find.text('My text').first;
       await tester.tap(item);
       await tester.pumpAndSettle();
 

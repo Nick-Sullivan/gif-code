@@ -9,19 +9,6 @@ class CollectionListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(context),
-      body: buildBody(context),
-    );
-  }
-
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
-      title: const Text('Collection'),
-    );
-  }
-
-  Widget buildBody(BuildContext context) {
     return CollectionListView(
       key: const Key('collectionView'),
     );

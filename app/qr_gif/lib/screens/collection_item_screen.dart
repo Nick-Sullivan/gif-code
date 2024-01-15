@@ -17,7 +17,7 @@ class CollectionItemScreen extends StatelessWidget {
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text(collectionController.selectedId.toString()),
+      title: Text(collectionController.selectedQrCode!.text),
     );
   }
 

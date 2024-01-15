@@ -40,12 +40,13 @@ class MyApp extends StatelessWidget {
   final bool configure;
   final authController = GetIt.instance<AuthController>();
 
-  MyApp({super.key, this.initialRoute = '/home', this.configure = true});
+  MyApp({super.key, this.initialRoute = '/make', this.configure = true});
 
   @override
   Widget build(BuildContext context) {
     if (configure) {
-      authController.configureAmplify();
+      // Disabling, no account login needed for right now.
+      // authController.configureAmplify();
     }
     return MaterialApp(
       title: 'GIF Code',
@@ -53,9 +54,8 @@ class MyApp extends StatelessWidget {
       theme: createLightTheme(),
       darkTheme: createDarkTheme(),
       routes: {
-        '/home': (context) => HomeScreen(),
-        '/account': (context) => AccountScreen(),
-        '/collection': (context) => CollectionListScreen(),
+        '/make': (context) => const HomeScreen(initialTab: 0),
+        '/collect': (context) => const HomeScreen(initialTab: 1),
       },
     );
   }

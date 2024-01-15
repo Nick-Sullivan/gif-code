@@ -52,4 +52,8 @@ class CollectionController extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
+
+  QrCode getQrCode(String qrId) {
+    return qrStore.getQrCode(qrId);
+  }
 }

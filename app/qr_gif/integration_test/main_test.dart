@@ -5,7 +5,7 @@ import 'package:qr_gif/main.dart';
 import 'account_screen.dart';
 import 'collection_item_screen.dart';
 import 'collection_list_screen.dart';
-import 'gif_screen.dart';
+import 'maker_screen.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env.automated");
@@ -17,8 +17,9 @@ void main() async {
     await setupSingletons();
   });
 
-  testGifScreen();
-  testAccountScreen(username, password);
+  testMakerScreen();
+  // Disabling, no account login needed for right now.
+  // testAccountScreen(username, password);
   testCollectionListScreen();
   testCollectionItemScreen();
 }
