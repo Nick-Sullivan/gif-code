@@ -9,7 +9,6 @@ env:
 
 permissions:
   contents: write
-  # pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -364,13 +363,14 @@ jobs:
           name: android-release-${{steps.version.outputs.FLUTTER_BUILD}}
 
       # To create a key, follow instructions at https://github.com/r0adkll/upload-google-play
+      # Internal track publishes immediately, closed and higher require review from Google play
       - name: Deploy to Google Play Console
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}
           packageName: com.gif_code
           releaseFiles: app-release.aab
-          track: alpha # internal,alpha(closed),beta(open),production
+          track: internal # internal,alpha(closed),beta(open),production
           status: completed
 
   # Production deployment
