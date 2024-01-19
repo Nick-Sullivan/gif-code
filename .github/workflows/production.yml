@@ -1,6 +1,6 @@
 name: "Production (manual)"
 
-on: foo # Event does not exist, this workflow is only run manually
+on: workflow_dispatch
 
 env:
   IS_CICD: "true"
