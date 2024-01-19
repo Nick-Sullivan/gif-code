@@ -370,7 +370,7 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}
           packageName: com.gif_code
           releaseFiles: app-release.aab
-          track: internal
+          track: closed # internal,closed,open
           status: completed
 
   # Production deployment
