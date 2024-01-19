@@ -1,4 +1,4 @@
-name: "Main"
+name: "Stage"
 
 on:
   push:
@@ -15,40 +15,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Pre-production testing
-
-  # detect_changes:
-  #   name: "Detect changes"
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 1
-  #   outputs:
-  #     server: ${{ steps.filter.outputs.server }}
-  #     app: ${{ steps.filter.outputs.app }}
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4
-
-  #     - uses: dorny/paths-filter@v2
-  #       id: filter
-  #       with:
-  #         base: ${{ github.ref }}
-  #         filters: |
-  #           server:
-  #             - 'server/**'
-  #           app:
-  #             - 'app/**'
-
-  #     - name: Are there changes to the app?
-  #       run: echo ${{ steps.filter.outputs.app }}
-
-  #     - name: Are there changes to the server?
-  #       run: echo ${{ steps.filter.outputs.server }}
-
-  create_staging_tag:
-    name: "Create staging tag"
+  create_tag:
+    name: "Create tag"
     runs-on: ubuntu-latest
     timeout-minutes: 1
     defaults:
@@ -76,9 +44,9 @@ jobs:
         with:
           ref: stage
 
-  deploy_staging_infrastructure:
-    name: "Deploy staging infrastructure"
-    needs: [create_staging_tag]
+  deploy_infrastructure:
+    name: "Deploy infrastructure"
+    needs: [create_tag]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -120,7 +88,7 @@ jobs:
 
   api_tests:
     name: "API tests"
-    needs: [deploy_staging_infrastructure]
+    needs: [deploy_infrastructure]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -153,59 +121,9 @@ jobs:
           export ENVIRONMENT=stage
           pytest tests/api
 
-  # trying an emulator
-  # flutter_tests:
-  #   name: "Flutter tests"
-  #   needs: [deploy_staging_infrastructure]
-  #   runs-on: macos-latest
-  #   timeout-minutes: 30
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4
-
-  #     - name: Setup flutter
-  #       uses: subosito/flutter-action@v2
-  #       with:
-  #         flutter-version: "3.10.0"
-  #         channel: "stable"
-  #         cache: true
-
-  #     - name: Setup AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: "ap-southeast-2"
-
-  #     - name: Setup terraform
-  #       uses: hashicorp/setup-terraform@v2
-
-  #     - name: Initialise terraform state (infrastructure)
-  #       working-directory: app/qr_gif/terraform/infrastructure
-  #       run: terraform init -backend-config "key=gif_code_app/stage/infrastructure/terraform.tfstate"
-
-  #     - name: Apply terraform state (infrastructure)
-  #       working-directory: app/qr_gif/terraform/infrastructure
-  #       run: terraform apply -auto-approve -var="environment=stage"
-
-  #     - name: Get dependencies
-  #       working-directory: app/qr_gif
-  #       run: flutter pub get
-
-  #     - uses: futureware-tech/simulator-action@v3
-  #       with:
-  #         model: "iPhone 14"
-
-  #     - name: Run tests
-  #       working-directory: app/qr_gif
-  #       run: flutter test integration_test --dart-define=IS_TESTING=true
-
   flutter_tests:
     name: "Flutter tests"
-    needs: [deploy_staging_infrastructure]
+    needs: [deploy_infrastructure]
     runs-on: windows-latest
     timeout-minutes: 30
     defaults:
@@ -250,15 +168,9 @@ jobs:
           flutter config --enable-windows-desktop
           flutter test -d windows integration_test/main_test.dart --dart-define=IS_TESTING=true
 
-  build_staging_app:
-    name: "Build staging app"
-    needs:
-      [
-        create_staging_tag,
-        deploy_staging_infrastructure,
-        flutter_tests,
-        api_tests,
-      ]
+  build_app:
+    name: "Build app"
+    needs: [create_tag, deploy_infrastructure, flutter_tests, api_tests]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -322,7 +234,7 @@ jobs:
         id: version
         run: echo "FLUTTER_BUILD=$VERSION" >> $GITHUB_OUTPUT
         env:
-          VERSION: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}
+          VERSION: 1.0.${{needs.create_tag.outputs.build_number}}+${{needs.create_tag.outputs.build_number}}
 
       - name: Update version in YAML
         working-directory: app/qr_gif
@@ -339,9 +251,9 @@ jobs:
           name: android-release-${{steps.version.outputs.FLUTTER_BUILD}}
           path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
 
-  deploy_staging_app:
-    name: "Deploy staging app"
-    needs: [create_staging_tag, build_staging_app, api_tests, flutter_tests]
+  deploy_app:
+    name: "Deploy app"
+    needs: [create_tag, build_app, api_tests, flutter_tests]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -355,7 +267,7 @@ jobs:
         id: version
         run: echo "FLUTTER_BUILD=$VERSION" >> $GITHUB_OUTPUT
         env:
-          VERSION: 1.0.${{needs.create_staging_tag.outputs.build_number}}+${{needs.create_staging_tag.outputs.build_number}}
+          VERSION: 1.0.${{needs.create_tag.outputs.build_number}}+${{needs.create_tag.outputs.build_number}}
 
       - name: Load Android build
         uses: actions/download-artifact@v4
@@ -373,13 +285,15 @@ jobs:
           track: internal # internal,alpha(closed),beta(open),production
           status: completed
 
-  # Production deployment
+  # Some steps that I've decided to ignore for now, but might add later
 
-  # create_production_tag:
-  #   name: "Create production tag"
-  #   needs: [deploy_staging_app]
+  # detect_changes:
+  #   name: "Detect changes"
   #   runs-on: ubuntu-latest
   #   timeout-minutes: 1
+  #   outputs:
+  #     server: ${{ steps.filter.outputs.server }}
+  #     app: ${{ steps.filter.outputs.app }}
   #   defaults:
   #     run:
   #       shell: bash
@@ -387,71 +301,34 @@ jobs:
   #     - name: Checkout branch
   #       uses: actions/checkout@v4
 
-  #     - name: "Create production tag"
-  #       uses: EndBug/latest-tag@v1.6.1
+  #     - uses: dorny/paths-filter@v2
+  #       id: filter
   #       with:
-  #         ref: production
+  #         base: ${{ github.ref }}
+  #         filters: |
+  #           server:
+  #             - 'server/**'
+  #           app:
+  #             - 'app/**'
 
-  # deploy_production_infrastructure:
-  #   name: "Deploy production infrastructure"
-  #   needs: [create_production_tag]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
+  #     - name: Are there changes to the app?
+  #       run: echo ${{ steps.filter.outputs.app }}
+
+  #     - name: Are there changes to the server?
+  #       run: echo ${{ steps.filter.outputs.server }}
+
+  # trying an emulator
+  # flutter_tests:
+  #   name: "Flutter tests"
+  #   needs: [deploy_infrastructure]
+  #   runs-on: macos-latest
+  #   timeout-minutes: 30
   #   defaults:
   #     run:
   #       shell: bash
   #   steps:
   #     - name: Checkout branch
   #       uses: actions/checkout@v4
-
-  #     - name: Setup AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: "ap-southeast-2"
-
-  #     - name: Setup terraform
-  #       uses: hashicorp/setup-terraform@v2
-
-  #     - name: Initialise terraform state (foundation)
-  #       working-directory: server/terraform/foundation
-  #       run: terraform init -backend-config "key=gif_code/production/foundation/terraform.tfstate"
-
-  #     - name: Apply terraform state (foundation)
-  #       working-directory: server/terraform/foundation
-  #       run: terraform apply -auto-approve -var="environment=production" -var="giphy_api_key=${{secrets.GIPHY_API_KEY}}"
-
-  #     - name: Initialise terraform state (infrastructure)
-  #       working-directory: server/terraform/infrastructure
-  #       run: terraform init -backend-config "key=gif_code/production/infrastructure/terraform.tfstate"
-
-  #     - name: Build libs (infrastructure)
-  #       working-directory: server/lambda/libs
-  #       run: pip install -r requirements.txt --target python
-
-  #     - name: Apply terraform state (infrastructure)
-  #       working-directory: server/terraform/infrastructure
-  #       run: terraform apply -auto-approve -var="environment=production"
-
-  # build_production_app:
-  #   name: "Build production flutter app"
-  #   needs: [deploy_production_infrastructure]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4
-
-  #     - name: Setup java
-  #       uses: actions/setup-java@v4
-  #       with:
-  #         distribution: "zulu"
-  #         java-version: "12.x"
-  #         cache: "gradle"
 
   #     - name: Setup flutter
   #       uses: subosito/flutter-action@v2
@@ -470,102 +347,22 @@ jobs:
   #     - name: Setup terraform
   #       uses: hashicorp/setup-terraform@v2
 
+  #     - name: Initialise terraform state (infrastructure)
+  #       working-directory: app/qr_gif/terraform/infrastructure
+  #       run: terraform init -backend-config "key=gif_code_app/stage/infrastructure/terraform.tfstate"
+
+  #     - name: Apply terraform state (infrastructure)
+  #       working-directory: app/qr_gif/terraform/infrastructure
+  #       run: terraform apply -auto-approve -var="environment=stage"
+
   #     - name: Get dependencies
   #       working-directory: app/qr_gif
   #       run: flutter pub get
 
-  #     - name: Initialise terraform state (infrastructure)
-  #       working-directory: app/qr_gif/terraform/infrastructure
-  #       run: terraform init -backend-config "key=gif_code_app/production/infrastructure/terraform.tfstate"
-
-  #     - name: Apply terraform state (infrastructure)
-  #       working-directory: app/qr_gif/terraform/infrastructure
-  #       run: terraform apply -auto-approve -var="environment=production"
-
-  #     - name: Download Android keystore
-  #       id: android_keystore
-  #       uses: timheuer/base64-to-file@v1.2
+  #     - uses: futureware-tech/simulator-action@v3
   #       with:
-  #         fileName: upload-keystore.jks
-  #         encodedString: ${{ secrets.GOOGLE_PLAY_KEYSTORE_BASE64 }}
+  #         model: "iPhone 14"
 
-  #     - name: Create key.properties
-  #       run: |
-  #         echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" > app/qr_gif/android/key.properties
-  #         echo "storePassword=${{ secrets.GOOGLE_PLAY_KEYSTORE_PASSWORD }}" >> app/qr_gif/android/key.properties
-  #         echo "keyPassword=${{ secrets.GOOGLE_PLAY_KEYSTORE_PASSWORD }}" >> app/qr_gif/android/key.properties
-  #         echo "keyAlias=${{ secrets.GOOGLE_PLAY_KEYSTORE_ALIAS }}" >> app/qr_gif/android/key.properties
-
-  #     - name: Update version in YAML
+  #     - name: Run tests
   #       working-directory: app/qr_gif
-  #       run: |
-  #         echo "version: ${{env.FLUTTER_VERSION}}" >> pubspec.yaml
-
-  #     - name: Build appbundle
-  #       working-directory: app/qr_gif
-  #       run: flutter build appbundle
-
-  #     - name: Save Android bundle
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: android-release
-  #         path: app/qr_gif/build/app/outputs/bundle/release/app-release.aab
-
-  # deploy_production_app:
-  #   name: "Deploy production flutter app"
-  #   needs: [build_production_app]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4
-
-  #     - name: Load Android build
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: android-release
-
-  #     # To create a key, follow instructions at https://github.com/r0adkll/upload-google-play
-  #     - name: Deploy to Google Play Console
-  #       uses: r0adkll/upload-google-play@v1
-  #       with:
-  #         serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}
-  #         packageName: com.gif_code
-  #         releaseFiles: app-release.aab
-  #         track: alpha # closed testing
-  #         status: completed
-
-  # merge_to_prod:
-  #   name: "Merge to production"
-  #   needs: [api_tests, deploy_app]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #   steps:
-  #     - name: Checkout branch
-  #       uses: actions/checkout@v4
-
-  #     - name: Create PR
-  #       id: cpr
-  #       run: |
-  #         PR_URL=$(gh pr create --base production --title "Production deployment" --body "This was automatically generated by the stage pipeline.")
-  #         echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
-  #       env:
-  #         GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
-
-  #     - name: Approve PR
-  #       run: gh pr review --approve "$PR_URL"
-  #       env:
-  #         PR_URL: ${{ steps.cpr.outputs.pr_url }}
-  #         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-  #     - name: Mark PR to auto-merge when ready
-  #       run: gh pr merge --auto --merge "$PR_URL"
-  #       env:
-  #         PR_URL: ${{ steps.cpr.outputs.pr_url }}
-  #         GITHUB_TOKEN: ${{secrets.AUTOMERGE_PR_TOKEN}}
+  #       run: flutter test integration_test --dart-define=IS_TESTING=true
