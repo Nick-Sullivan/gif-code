@@ -10,8 +10,6 @@ import 'package:qr_gif/infrastructure/interfaces/amplify_auth.dart';
 import 'package:qr_gif/infrastructure/interfaces/giphy_api.dart';
 import 'package:qr_gif/infrastructure/interfaces/qr_code_store.dart';
 import 'package:qr_gif/infrastructure/interfaces/qr_code_api.dart';
-import 'package:qr_gif/screens/account_screen.dart';
-import 'package:qr_gif/screens/collection_list_screen.dart';
 import 'package:qr_gif/screens/home_screen.dart';
 import 'package:qr_gif/widgets/auth/auth_controller.dart';
 import 'package:qr_gif/widgets/collection/collection_controller.dart';

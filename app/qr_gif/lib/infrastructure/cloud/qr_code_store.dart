@@ -97,4 +97,9 @@ class QrCodeStore implements IQrCodeStore {
     final dir = await getDirectory();
     return File("${dir.path}/$qrId.meta");
   }
+
+  @override
+  String getQrImagePath(String qrId) {
+    return "${_dir!.path}/$qrId.gif";
+  }
 }

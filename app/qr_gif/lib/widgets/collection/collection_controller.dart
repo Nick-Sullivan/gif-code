@@ -56,4 +56,8 @@ class CollectionController extends ChangeNotifier {
   QrCode getQrCode(String qrId) {
     return qrStore.getQrCode(qrId);
   }
+
+  String getQrImagePath() {
+    return qrStore.getQrImagePath(selectedId!);
+  }
 }

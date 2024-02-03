@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:qr_gif/widgets/collection/collection_controller.dart';
 import 'package:qr_gif/widgets/collection/collection_item_view.dart';
+import 'package:share_plus/share_plus.dart';
 
 class CollectionItemScreen extends StatelessWidget {
   final collectionController = GetIt.instance<CollectionController>();
@@ -23,12 +24,19 @@ class CollectionItemScreen extends StatelessWidget {
             var popMenus = [
               const PopupMenuItem(
                   value: 0,
-                  child: Row(children: [Icon(Icons.delete), Text("Delete")]))
+                  child: Row(children: [Icon(Icons.share), Text("Share")])),
+              const PopupMenuItem(
+                  value: 1,
+                  child: Row(children: [Icon(Icons.delete), Text("Delete")])),
             ];
             return popMenus;
           },
           onSelected: ((value) {
             if (value == 0) {
+              final path = collectionController.getQrImagePath();
+              Share.shareXFiles([XFile(path)]);
+            }
+            if (value == 1) {
               showDialog<String>(
                   context: context,
                   builder: (context) => AlertDialog(

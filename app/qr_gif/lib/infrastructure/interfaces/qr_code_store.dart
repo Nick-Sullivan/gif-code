@@ -8,4 +8,5 @@ abstract class IQrCodeStore {
   List<String> listSavedQrCodeIds();
   bool hasLoadedQrCode(String qrCodeId);
   QrCode getQrCode(String qrCodeId);
+  String getQrImagePath(String qrCodeId);
 }
