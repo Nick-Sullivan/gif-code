@@ -21,8 +21,10 @@ class QrCodeStore implements IQrCodeStore {
       final qrId = getIdFromPath(file.path);
       if (!_qrIds.contains(qrId)) {
         _qrIds.add(qrId);
+        await loadQrCode(qrId);
       }
     }
+    _qrIds.sort((a, b) => _qrCodesById[a]!.compareTo(_qrCodesById[b]!));
     return _qrIds;
   }
 

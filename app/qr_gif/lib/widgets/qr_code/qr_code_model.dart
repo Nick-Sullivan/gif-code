@@ -33,4 +33,12 @@ class QrCode {
       text: map['text'],
     );
   }
+
+  int compareTo(QrCode other) {
+    final byText = text.compareTo(other.text);
+    if (byText != 0) {
+      return byText;
+    }
+    return id.compareTo(other.id);
+  }
 }

@@ -19,7 +19,7 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
     final request = '''{
       "text": "$text",
       "giphy_id": "$giphyId",
-      "transparency": 160,
+      "transparency": 190,
       "version": 6
     }''';
     return await sendRequest(uri, request);
