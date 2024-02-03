@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:qr_gif/main.dart';
 
@@ -19,6 +20,32 @@ void testCollectionListScreen() {
       await tester.pumpAndSettle();
       final item = find.text('My text');
       expect(item, findsWidgets);
+    });
+
+    testWidgets('when long pressing an item, it should copy the text',
+        (WidgetTester tester) async {
+      await tester
+          .pumpWidget(MyApp(configure: false, initialRoute: '/collect'));
+      await tester.pumpAndSettle();
+      final item = find.text('My text');
+      await tester.longPress(item);
+      await tester.pumpAndSettle();
+
+      final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+      expect(clipboardData!.text, 'My text');
+    });
+
+    testWidgets('when long pressing an item, it should show a notification',
+        (WidgetTester tester) async {
+      await tester
+          .pumpWidget(MyApp(configure: false, initialRoute: '/collect'));
+      await tester.pumpAndSettle();
+      final item = find.text('My text');
+      await tester.longPress(item);
+      await tester.pumpAndSettle();
+
+      final notification = find.text('Text copied.');
+      expect(notification, findsOneWidget);
     });
 
     testWidgets('when tapping the item, it should show item detail screen',

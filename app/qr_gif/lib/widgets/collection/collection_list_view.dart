@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:qr_gif/screens/collection_item_screen.dart';
 import 'package:qr_gif/widgets/collection/collection_controller.dart';
@@ -33,6 +34,12 @@ class CollectionListView extends StatelessWidget {
         controller.setSelectedId(qrId);
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => CollectionItemScreen()));
+      },
+      onLongPress: () async {
+        final text = controller.getQrCode(qrId).text;
+        await Clipboard.setData(ClipboardData(text: text)).then((value) =>
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text("Text copied."))));
       },
     );
   }
