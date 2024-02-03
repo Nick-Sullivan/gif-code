@@ -62,7 +62,7 @@ jobs:
           aws-region: "ap-southeast-2"
 
       - name: Setup terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
 
       - name: Initialise terraform state (foundation)
         working-directory: server/terraform/foundation
@@ -104,7 +104,7 @@ jobs:
           aws-region: "ap-southeast-2"
 
       - name: Setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.9"
           cache: "pip"
@@ -146,7 +146,7 @@ jobs:
           aws-region: "ap-southeast-2"
 
       - name: Setup terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
 
       - name: Initialise terraform state (infrastructure)
         working-directory: app/qr_gif/terraform/infrastructure
@@ -200,7 +200,7 @@ jobs:
           aws-region: "ap-southeast-2"
 
       - name: Setup terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
 
       - name: Get dependencies
         working-directory: app/qr_gif
