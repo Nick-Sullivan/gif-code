@@ -14,9 +14,14 @@ class CollectionItemView extends StatelessWidget {
           if (controller.selectedQrCode == null || controller.isLoading) {
             return const CircularProgressIndicator(key: Key('loadingImage'));
           }
-          return Column(children: <Widget>[
-            controller.selectedQrCode!.image,
-          ]);
+          return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                FittedBox(
+                  fit: BoxFit.fill,
+                  child: controller.selectedQrCode!.image,
+                )
+              ]);
         });
   }
 }
