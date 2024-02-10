@@ -2,11 +2,42 @@ $ErrorActionPreference = "Stop"
 $command = $args[0]
 
 
+# Runs when first setting up the repository.
+
 function Install {
     Write-Output "Installing server libraries"
-    py -3.9 -m venv .venv  
+    py -3.11 -m venv .venv  
     ./.venv/Scripts/activate
     pip install -r requirements.txt
+    deactivate
+}
+
+# Runs whenever you switch environments.
+
+function Init-Foundation([string]$environment, [string]$giphyApiKey) {
+    $key = "key=gif_code/$environment/foundation/terraform.tfstate"
+    Write-Output $key
+    Set-Location terraform/foundation
+    terraform init -backend-config $key -reconfigure
+    $text = 'environment="' + $environment + '"' + "`r`n" + 'giphy_api_key="' + $giphyApiKey + '"'
+    $text | Out-File -FilePath "terraform.tfvars" -Encoding utf8
+    Set-Location ../..
+}
+
+function Init-Infrastructure([string]$environment) {
+    ./.venv/Scripts/activate
+    $key = "key=gif_code/$environment/infrastructure/terraform.tfstate"
+    Write-Output $key
+    Set-Location terraform/infrastructure
+    terraform init -backend-config $key -reconfigure
+    $text = 'environment="' + $environment + '"'
+    $text | Out-File -FilePath "terraform.tfvars" -Encoding utf8
+    Set-Location ../..
+
+    Set-Location lambda/libs
+    pip install -r requirements.txt --target python
+    Set-Location ../..
+
     deactivate
 }
 
@@ -20,30 +51,17 @@ function Load-Env([string]$key) {
     }
 }
 
-function Init-Foundation([string]$environment, [string]$giphyApiKey) {
-    $key = "key=gif_code/$environment/foundation/terraform.tfstate"
-    Write-Output $key
+# Runs after code has been changed.
+
+function Deploy() {
     Set-Location terraform/foundation
-    terraform init -backend-config $key -reconfigure
-    $text = 'environment="' + $environment + '"' + "`r`n" + 'giphy_api_key="' + $giphyApiKey + '"'
-    $text | Out-File -FilePath "terraform.tfvars" -Encoding utf8
+    terraform apply
+    Set-Location ../infrastructure
+    terraform apply
     Set-Location ../..
 }
 
-function Init-Infrastructure([string]$environment) {
-    $key = "key=gif_code/$environment/infrastructure/terraform.tfstate"
-    Write-Output $key
-    Set-Location terraform/infrastructure
-    terraform init -backend-config $key -reconfigure
-    $text = 'environment="' + $environment + '"'
-    $text | Out-File -FilePath "terraform.tfvars" -Encoding utf8
-    Set-Location ../..
-
-    Set-Location lambda/libs
-    pip install -r requirements.txt --target python
-    Set-Location ../..
-}
-
+# Runs after deployment.
 function Test-Api {
     Write-Output "Running API tests for the server"
     ./.venv/Scripts/activate
@@ -59,6 +77,7 @@ function Freeze {
 }
 
 switch ($command) {
+    # Repo setup
     "install" { Install }
     "freeze" { Freeze }
     # Environment setup
@@ -73,6 +92,8 @@ switch ($command) {
             Write-Output "Did not find the environment"
         }
     }
+    # Deployment
+    "deploy" { Deploy }
     # Testing
     "test" { 
         Test-Api

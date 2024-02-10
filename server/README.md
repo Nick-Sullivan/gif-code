@@ -27,10 +27,7 @@ If you want to create a different environment, change `dev` to any unique string
 4. Deploy terraform
 
 ```bash
-cd terraform/foundation
-terraform apply
-cd ../infrastructure
-terraform apply
+./make.ps1 deploy
 ```
 
 5. Run API tests

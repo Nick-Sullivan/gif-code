@@ -23,14 +23,14 @@ data "archive_file" "libs" {
 resource "aws_lambda_layer_version" "libs" {
   filename            = data.archive_file.libs.output_path
   layer_name          = "${local.prefix}-Libs"
-  compatible_runtimes = ["python3.9"]
+  compatible_runtimes = ["python3.11"]
   source_code_hash    = data.archive_file.libs.output_base64sha256
 }
 
 resource "aws_lambda_layer_version" "layer" {
   filename            = "${local.lambda_dir}/zip/layer.zip"
   layer_name          = "${local.prefix}-Layer"
-  compatible_runtimes = ["python3.9"]
+  compatible_runtimes = ["python3.11"]
   source_code_hash    = data.archive_file.layer.output_base64sha256
 }
 
@@ -47,11 +47,10 @@ resource "aws_lambda_function" "create_qr_gif" {
   layers = [
     aws_lambda_layer_version.layer.arn,
     aws_lambda_layer_version.libs.arn,
-    "arn:aws:lambda:ap-southeast-2:770693421928:layer:Klayers-p39-pillow:1",
-    # "arn:aws:lambda:ap-southeast-2:770693421928:layer:Klayers-p39-requests:19",
+    "arn:aws:lambda:ap-southeast-2:770693421928:layer:Klayers-p311-Pillow:3",
   ]
   role             = aws_iam_role.create_qr_gif.arn
-  runtime          = "python3.9"
+  runtime          = "python3.11"
   timeout          = 30
   source_code_hash = data.archive_file.handler.output_base64sha256
   depends_on       = [aws_cloudwatch_log_group.all]

@@ -27,6 +27,7 @@ class GiphyMetadata:
 
 
 class GifMaker:
+    base_path = 'https://api.giphy.com'
 
     def __init__(self, api_key: str):
         self.key = api_key
@@ -51,7 +52,7 @@ class GifMaker:
         params = {
             'api_key': self.key,
         }
-        response = requests.get(f'http://api.giphy.com/v1/gifs/{id}', params=params)
+        response = requests.get(f'{self.base_path}/v1/gifs/{id}', params=params)
         if not response.ok:
             raise Exception()
         return GiphyMetadata.from_json(response.json()['data'])
@@ -61,7 +62,7 @@ class GifMaker:
             'api_key': self.key,
             'limit': 1,
         }
-        response = requests.get('http://api.giphy.com/v1/gifs/random', params=params)
+        response = requests.get(f'{self.base_path}/v1/gifs/random', params=params)
         if not response.ok:
             raise Exception()
         return GiphyMetadata.from_json(response.json()['data'])
@@ -72,7 +73,7 @@ class GifMaker:
             'q': text,
             'limit': 1,
         }
-        response = requests.get('http://api.giphy.com/v1/gifs/search', params=params)
+        response = requests.get(f'{self.base_path}/v1/gifs/search', params=params)
         if not response.ok:
             raise Exception()
         return [GiphyMetadata.from_json(data) for data in response.json()['data']]
@@ -82,7 +83,7 @@ class GifMaker:
             'api_key': self.key,
             'limit': 1,
         }
-        response = requests.get('http://api.giphy.com/v1/gifs/trending', params=params)
+        response = requests.get(f'{self.base_path}/v1/gifs/trending', params=params)
         if not response.ok:
             raise Exception()
         return [GiphyMetadata.from_json(data) for data in response.json()['data']]
