@@ -39,8 +39,5 @@ If you want to create a different environment, change `dev` to any unique string
 6. Cleanup
 
 ```bash
-cd terraform/infrastructure
-terraform destroy
-cd ../foundation
-terraform destroy
+./make.ps1 destroy
 ```

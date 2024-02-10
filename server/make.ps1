@@ -69,6 +69,16 @@ function Test-Api {
     deactivate
 }
 
+# Runs when we are done with our environment
+
+function Destroy() {
+    Set-Location terraform/infrastructure
+    terraform destroy
+    Set-Location ../foundation
+    terraform destroy
+    Set-Location ../..
+}
+
 function Freeze {
     Write-Output "Updating requirements.txt"
     ./.venv/Scripts/activate
@@ -94,6 +104,7 @@ switch ($command) {
     }
     # Deployment
     "deploy" { Deploy }
+    "destroy" { Destroy }
     # Testing
     "test" { 
         Test-Api
