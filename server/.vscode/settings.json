@@ -6,6 +6,9 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "--ignore=lambda/libs"
+    ],
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8",
         "editor.codeActionsOnSave": {

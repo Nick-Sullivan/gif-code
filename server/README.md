@@ -33,7 +33,7 @@ If you want to create a different environment, change `dev` to any unique string
 5. Run API tests
 
 ```bash
-./make.ps1 test-api
+./make.ps1 test
 ```
 
 6. Cleanup
