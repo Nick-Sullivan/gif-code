@@ -9,7 +9,7 @@ void testGifSelectionScreen() {
       await tester.pumpWidget(MyApp(configure: true));
       final gifTextInput = find.byKey(const Key('gifText'));
       await tester.pumpAndSettle();
-      final text = tester.widget<TextField>(gifTextInput).controller?.text;
+      final text = tester.widget<TextFormField>(gifTextInput).controller?.text;
       expect(text, "");
     });
   });

@@ -19,7 +19,7 @@ void main() async {
 
   // Disabling, no account login needed for right now.
   // testAccountScreen(username, password);
-  testGifSelectionScreen();
+  // testGifSelectionScreen();
   testQrTextScreen();
   testCollectionListScreen();
   testCollectionItemScreen();
