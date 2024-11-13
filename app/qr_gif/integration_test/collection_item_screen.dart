@@ -7,7 +7,7 @@ void testCollectionItemScreen() {
     testWidgets('when opening, it should show the QR code',
         (WidgetTester tester) async {
       await tester
-          .pumpWidget(MyApp(configure: false, initialRoute: '/collect'));
+          .pumpWidget(MyApp(configure: false, initialRoute: '/collection'));
       final item = find.text('My text').first;
       await tester.tap(item);
       await tester.pumpAndSettle();
@@ -15,10 +15,30 @@ void testCollectionItemScreen() {
       expect(qrCodeImage, findsOneWidget);
     });
 
+    // testWidgets('when sharing, it should show share options',
+    //     (WidgetTester tester) async {
+    //   await tester
+    //       .pumpWidget(MyApp(configure: false, initialRoute: '/collection'));
+    //   final item = find.text('My text').first;
+    //   await tester.tap(item);
+    //   await tester.pumpAndSettle();
+
+    //   final menuButton = find.byKey(const Key('menuButton'));
+    //   await tester.tap(menuButton);
+    //   await tester.pumpAndSettle();
+
+    //   final shareButton = find.text('Share');
+    //   await tester.tap(shareButton);
+    //   await tester.pumpAndSettle();
+
+    //   final itemAfter = find.text('No');
+    //   expect(itemAfter, findsOneWidget);
+    // });
+
     testWidgets('when deleting, it should return to the list screen',
         (WidgetTester tester) async {
       await tester
-          .pumpWidget(MyApp(configure: false, initialRoute: '/collect'));
+          .pumpWidget(MyApp(configure: false, initialRoute: '/collection'));
       final item = find.text('My text').first;
       await tester.tap(item);
       await tester.pumpAndSettle();
@@ -27,7 +47,7 @@ void testCollectionItemScreen() {
       await tester.tap(menuButton);
       await tester.pumpAndSettle();
 
-      final deleteButton = find.text('Delete');
+      final deleteButton = find.text(' Delete');
       await tester.tap(deleteButton);
       await tester.pumpAndSettle();
 

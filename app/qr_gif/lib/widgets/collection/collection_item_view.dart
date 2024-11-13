@@ -15,12 +15,14 @@ class CollectionItemView extends StatelessWidget {
             return const CircularProgressIndicator(key: Key('loadingImage'));
           }
           return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                FittedBox(
-                  fit: BoxFit.fill,
+                Expanded(
+                    child: AspectRatio(
+                  aspectRatio: 1,
                   child: controller.selectedQrCode!.image,
-                )
+                ))
               ]);
         });
   }

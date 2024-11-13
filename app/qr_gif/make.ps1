@@ -25,6 +25,8 @@ function Init-Infrastructure([string]$environment) {
 
 function Build() {
     Write-Output "Building app"
+    flutter clean
+    flutter pub get
     flutter build appbundle
 }
 

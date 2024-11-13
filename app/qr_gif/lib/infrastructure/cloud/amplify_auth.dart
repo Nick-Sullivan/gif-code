@@ -90,6 +90,12 @@ class AmplifyAuthenticator implements IAmplifyAuthenticator {
         // final prompt = parameters['prompt']!;
         // safePrint(prompt);
         break;
+      case AuthSignInStep.continueSignInWithMfaSetupSelection:
+        break;
+      case AuthSignInStep.continueSignInWithEmailMfaSetup:
+        break;
+      case AuthSignInStep.confirmSignInWithOtpCode:
+        break;
       case AuthSignInStep.resetPassword:
         // final resetResult = await Amplify.Auth.resetPassword(
         //   username: username,

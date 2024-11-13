@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:qr_gif/widgets/gif_form/gif_form_controller.dart';
+import 'package:qr_gif/widgets/qr_creation/qr_creation_controller.dart';
 import 'package:qr_gif/widgets/qr_code/qr_code_controller.dart';
 
-class GifFormView extends StatelessWidget {
-  final GifFormController gifFormController;
+class QrTextView extends StatelessWidget {
   final QrCodeController qrCodeController;
+  final QrCreationController qrCreationController;
   final _formKey = GlobalKey<FormState>();
 
-  GifFormView(
+  QrTextView(
       {super.key,
-      required this.gifFormController,
+      required this.qrCreationController,
       required this.qrCodeController});
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-        listenable: gifFormController,
+        listenable: qrCreationController,
         builder: (BuildContext context, Widget? child) {
           return Form(
             key: _formKey,
             onChanged: () {
-              gifFormController.setValid(_formKey.currentState!.validate());
+              qrCreationController
+                  .setIsQrTextValid(_formKey.currentState!.validate());
             },
             child: Column(
               children: <Widget>[
@@ -28,12 +29,11 @@ class GifFormView extends StatelessWidget {
                   padding: const EdgeInsets.all(20.0),
                   child: TextFormField(
                     key: const Key("qrText"),
-                    controller: gifFormController.textController,
+                    controller: qrCreationController.qrTextController,
                     autofocus: true,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: "Enter text",
-                        prefixIcon: Icon(Icons.qr_code_2),
+                        labelText: "Text to encode",
                         contentPadding: EdgeInsets.all(20.0)),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -49,32 +49,18 @@ class GifFormView extends StatelessWidget {
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   ElevatedButton.icon(
                     key: const Key("gifButton"),
-                    icon: const Icon(Icons.image),
-                    label: const Text('Select from GIPHY'),
-                    onPressed: gifFormController.isValid
-                        ? () async {
-                            FocusScope.of(context).unfocus();
-                            final gifId =
-                                await gifFormController.createGif(context);
-                            if (gifId != null) {
-                              qrCodeController.createGif(
-                                  gifId, gifFormController.text);
-                            }
+                    icon: const Icon(Icons.build),
+                    label: qrCreationController.isMediaSelected
+                        ? const Text('Build')
+                        : const Text("No GIF selected"),
+                    onPressed: qrCreationController.isReadyToMake
+                        ? () {
+                            qrCodeController.createGif(
+                                qrCreationController.mediaId!,
+                                qrCreationController.qrText);
                           }
                         : null,
                   ),
-                  ElevatedButton.icon(
-                    key: const Key("randomGifButton"),
-                    icon: const Icon(Icons.question_mark),
-                    label: const Text('Random'),
-                    onPressed: gifFormController.isValid
-                        ? () async {
-                            FocusScope.of(context).unfocus();
-                            qrCodeController
-                                .createRandom(gifFormController.text);
-                          }
-                        : null,
-                  )
                 ]),
               ],
             ),

@@ -24,10 +24,10 @@ class CollectionItemScreen extends StatelessWidget {
             var popMenus = [
               const PopupMenuItem(
                   value: 0,
-                  child: Row(children: [Icon(Icons.share), Text("Share")])),
+                  child: Row(children: [Icon(Icons.share), Text(" Share")])),
               const PopupMenuItem(
                   value: 1,
-                  child: Row(children: [Icon(Icons.delete), Text("Delete")])),
+                  child: Row(children: [Icon(Icons.delete), Text(" Delete")])),
             ];
             return popMenus;
           },
@@ -69,13 +69,9 @@ class CollectionItemScreen extends StatelessWidget {
     return ListenableBuilder(
         listenable: collectionController,
         builder: (BuildContext context, Widget? child) {
-          return Center(
-            child: SingleChildScrollView(
-              child: CollectionItemView(
-                  controller: collectionController,
-                  key: const Key('collectionItemView')),
-            ),
-          );
+          return CollectionItemView(
+              controller: collectionController,
+              key: const Key('collectionItemView'));
         });
   }
 }
