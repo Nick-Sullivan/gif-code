@@ -160,7 +160,9 @@ jobs:
 
       - name: Get dependencies
         working-directory: app/qr_gif
-        run: flutter pub get
+        run: |
+          flutter clean
+          flutter pub get
 
       - name: Run tests
         working-directory: app/qr_gif
@@ -206,7 +208,9 @@ jobs:
 
       - name: Get dependencies
         working-directory: app/qr_gif
-        run: flutter pub get
+        run: |
+          flutter clean
+          flutter pub get
 
       - name: Initialise terraform state (infrastructure)
         working-directory: app/qr_gif/terraform/infrastructure
