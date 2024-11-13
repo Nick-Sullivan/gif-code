@@ -158,7 +158,9 @@ jobs:
 
       - name: Get dependencies
         working-directory: app/qr_gif
-        run: flutter pub get
+        run: |
+          flutter clean
+          flutter pub get
 
       - name: Run tests
         working-directory: app/qr_gif

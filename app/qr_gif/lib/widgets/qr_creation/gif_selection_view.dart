@@ -4,6 +4,7 @@ import 'package:giphy_flutter_sdk/dto/giphy_media.dart';
 import 'package:giphy_flutter_sdk/dto/giphy_content_request.dart';
 import 'package:giphy_flutter_sdk/dto/giphy_media_type.dart';
 import 'package:giphy_flutter_sdk/giphy_grid_view.dart';
+import 'dart:io';
 
 class GifSelectionView extends StatelessWidget {
   final QrCreationController qrCreationController;
@@ -36,20 +37,21 @@ class GifSelectionView extends StatelessWidget {
                     },
                   ),
                 ),
-                Expanded(
-                    child: GiphyGridView(
-                  content: qrCreationController.gifText.isNotEmpty
-                      ? GiphyContentRequest(
-                          mediaType: GiphyMediaType.gif,
-                          requestType: GiphyContentRequestType.search,
-                          searchQuery: qrCreationController.gifText)
-                      : GiphyContentRequest.trending(
-                          mediaType: GiphyMediaType.gif),
-                  onMediaSelect: (GiphyMedia media) {
-                    qrCreationController.setMediaId(media.id);
-                    Navigator.pushReplacementNamed(context, '/qr');
-                  },
-                ))
+                if (!Platform.isWindows)
+                  Expanded(
+                      child: GiphyGridView(
+                    content: qrCreationController.gifText.isNotEmpty
+                        ? GiphyContentRequest(
+                            mediaType: GiphyMediaType.gif,
+                            requestType: GiphyContentRequestType.search,
+                            searchQuery: qrCreationController.gifText)
+                        : GiphyContentRequest.trending(
+                            mediaType: GiphyMediaType.gif),
+                    onMediaSelect: (GiphyMedia media) {
+                      qrCreationController.setMediaId(media.id);
+                      Navigator.pushReplacementNamed(context, '/qr');
+                    },
+                  ))
               ],
             ),
           );

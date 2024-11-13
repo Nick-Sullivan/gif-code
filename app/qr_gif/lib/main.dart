@@ -13,6 +13,7 @@ import 'package:qr_gif/screens/home_screen.dart';
 import 'package:qr_gif/widgets/auth/auth_controller.dart';
 import 'package:qr_gif/widgets/collection/collection_controller.dart';
 import 'package:qr_gif/widgets/qr_creation/qr_creation_controller.dart';
+import 'dart:io';
 
 void main() async {
   await setupSingletons();
@@ -22,7 +23,11 @@ void main() async {
 Future<void> setupSingletons() async {
   await dotenv.load(fileName: ".env.automated");
   final qrCodeApi = QrCodeApiInteractor(url: dotenv.env['API_GATEWAY_URL']!);
-  GiphyFlutterSDK.configure(apiKey: dotenv.env['GIPHY_API_KEY']!);
+  // This app doesn't support windows, but it's used for testing because I couldn't
+  // find an easy/reliable way to test on an emulator in the CICD pipeline.
+  if (!Platform.isWindows) {
+    GiphyFlutterSDK.configure(apiKey: dotenv.env['GIPHY_API_KEY']!);
+  }
   GetIt.I.registerSingleton<IQrCodeApiInteractor>(qrCodeApi);
   GetIt.I.registerSingleton<IQrCodeStore>(QrCodeStore());
   GetIt.I.registerSingleton<IAmplifyAuthenticator>(AmplifyAuthenticator());
