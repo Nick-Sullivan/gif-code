@@ -8,16 +8,22 @@ class QrCode {
   final Image image;
   final Uint8List imageBytes;
   final String text;
+  final int transparency;
 
   const QrCode({
     required this.id,
     required this.image,
     required this.imageBytes,
     required this.text,
+    required this.transparency,
   });
 
   List<int> serialiseMetaData() {
-    final json = jsonEncode({"id": id, "text": text});
+    final json = jsonEncode({
+      "id": id,
+      "text": text,
+      "transparency": transparency,
+    });
     final serialised = utf8.encode(json);
     return serialised;
   }
@@ -31,6 +37,8 @@ class QrCode {
       image: image,
       imageBytes: imageBytes,
       text: map['text'],
+      // transparency was set to 190 before it was configurable
+      transparency: map["transparency"] ?? 190,
     );
   }
 

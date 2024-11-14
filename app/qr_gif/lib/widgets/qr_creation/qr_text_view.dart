@@ -46,6 +46,46 @@ class QrTextView extends StatelessWidget {
                     },
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ToggleButtons(
+                      isSelected: [
+                        !qrCreationController.isBoomerang,
+                        qrCreationController.isBoomerang,
+                      ],
+                      onPressed: (index) => qrCreationController
+                          .setIsBoomerang(index == 0 ? false : true),
+                      children: const [
+                        Icon(Icons.arrow_right_alt),
+                        Icon(Icons.compare_arrows),
+                      ],
+                    ),
+                    ToggleButtons(
+                      isSelected: [
+                        qrCreationController.qrTransparency ==
+                            QrTransparencyLevel.veryTransparent,
+                        qrCreationController.qrTransparency ==
+                            QrTransparencyLevel.transparent,
+                        qrCreationController.qrTransparency ==
+                            QrTransparencyLevel.solid,
+                      ],
+                      onPressed: (int index) {
+                        final selection = [
+                          QrTransparencyLevel.veryTransparent,
+                          QrTransparencyLevel.transparent,
+                          QrTransparencyLevel.solid,
+                        ][index];
+                        qrCreationController.setQrTransparency(selection);
+                      },
+                      children: const <Widget>[
+                        Opacity(opacity: 0.1, child: Icon(Icons.qr_code)),
+                        Opacity(opacity: 0.5, child: Icon(Icons.qr_code)),
+                        Opacity(opacity: 1.0, child: Icon(Icons.qr_code)),
+                      ],
+                    ),
+                  ],
+                ),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   ElevatedButton.icon(
                     key: const Key("gifButton"),
@@ -56,8 +96,11 @@ class QrTextView extends StatelessWidget {
                     onPressed: qrCreationController.isReadyToMake
                         ? () {
                             qrCodeController.createGif(
-                                qrCreationController.mediaId!,
-                                qrCreationController.qrText);
+                              qrCreationController.mediaId!,
+                              qrCreationController.qrText,
+                              qrCreationController.qrTransparencyValue,
+                              qrCreationController.isBoomerang,
+                            );
                           }
                         : null,
                   ),

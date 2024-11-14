@@ -17,10 +17,11 @@ class QrCodeController extends ChangeNotifier {
   String? _notificationMessage;
   String? get notificationMessage => _notificationMessage;
 
-  Future<void> createGif(String gifId, String text) async {
+  Future<void> createGif(
+      String gifId, String text, int transparency, bool boomerang) async {
     _isLoading = true;
     notifyListeners();
-    _qrCode = await qrApi.create(gifId, text);
+    _qrCode = await qrApi.create(gifId, text, transparency, boomerang);
     _isLoading = false;
     _hasLoaded = true;
     notifyListeners();

@@ -12,9 +12,8 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8",
         "editor.codeActionsOnSave": {
-            "source.fixAll": "never",
-            "source.organizeImports": "never",
-            "source.organizeImports.ruff": "explicit"
+            "source.organizeImports.ruff": "explicit",
+            "source.fixAll.ruff": "explicit",
         },
         "editor.insertSpaces": true,
         "editor.formatOnSave": false,

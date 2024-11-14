@@ -52,7 +52,6 @@ class QrBuilder:
         data = []
         for i, pixel in enumerate(trans_image.getdata()):
             if self._is_in_marker(i):
-                # data.append(pixel)
                 data.append((pixel[0], pixel[1], pixel[2], self.transparency))
             elif self._is_in_centre(i): 
                 data.append((pixel[0], pixel[1], pixel[2], self.transparency))

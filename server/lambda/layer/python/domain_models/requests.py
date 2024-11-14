@@ -7,3 +7,4 @@ class CreateQrRequest:
     text: str
     transparency: int
     version: int
+    is_boomerang: bool

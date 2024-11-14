@@ -14,13 +14,15 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
   QrCodeApiInteractor({required this.url});
 
   @override
-  Future<QrCode> create(String giphyId, String text) async {
+  Future<QrCode> create(
+      String giphyId, String text, int transparency, bool boomerang) async {
     final uri = Uri.parse('$url/gif');
     final request = '''{
       "text": "$text",
       "giphy_id": "$giphyId",
-      "transparency": 190,
-      "version": 6
+      "transparency": $transparency,
+      "version": 6,
+      "is_boomerang": $boomerang
     }''';
     return await sendRequest(uri, request);
   }
@@ -32,7 +34,7 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
     final request = '''{
       "text": "$text",
       "giphy_id": "$giphyId",
-      "transparency": 160,
+      "transparency": 190,
       "version": 6
     }''';
     return await sendRequest(uri, request);
@@ -47,10 +49,12 @@ class QrCodeApiInteractor implements IQrCodeApiInteractor {
     final imageBytes = await loadImageFromS3(json['url']);
     final image = Image.memory(imageBytes, key: const Key("qrCodeImage"));
     final qr = QrCode(
-        id: json['id'],
-        image: image,
-        imageBytes: imageBytes,
-        text: json['text']);
+      id: json['id'],
+      image: image,
+      imageBytes: imageBytes,
+      text: json['text'],
+      transparency: json['transparency'],
+    );
     return qr;
   }
 

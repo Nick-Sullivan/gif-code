@@ -9,7 +9,13 @@ from .endpoints import create, get_image
 
 @pytest.fixture(scope='module')
 def response():
-    request = {'text': 'This is an API test', 'giphy_id': 'WHv84VIQYOHBibUy6K', 'transparency': 200, 'version': 6}
+    request = {
+        'text': 'This is an API test',
+        'giphy_id': 'WHv84VIQYOHBibUy6K',
+        'transparency': 200,
+        'version': 6,
+        'is_boomerang': False,
+    }
     response = create(request)
     yield response
 
@@ -42,6 +48,11 @@ def test_it_returns_status_200(response):
 def test_it_returns_text(response_body):
     assert 'text' in response_body
     assert response_body['text'] == 'This is an API test'
+
+
+def test_it_returns_transparency(response_body):
+    assert 'transparency' in response_body
+    assert response_body['transparency'] == 200
 
 
 def test_it_returns_url(response_body):
