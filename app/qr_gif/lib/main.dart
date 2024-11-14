@@ -13,6 +13,7 @@ import 'package:qr_gif/screens/home_screen.dart';
 import 'package:qr_gif/widgets/auth/auth_controller.dart';
 import 'package:qr_gif/widgets/collection/collection_controller.dart';
 import 'package:qr_gif/widgets/qr_creation/qr_creation_controller.dart';
+import 'package:qr_gif/widgets/tab/vsync.dart';
 import 'dart:io';
 
 void main() async {
@@ -59,16 +60,26 @@ class MyApp extends StatelessWidget {
       // Disabling, no account login needed for right now.
       // authController.configureAmplify();
     }
+
     return MaterialApp(
       title: 'GIF Code',
       initialRoute: initialRoute,
       theme: createLightTheme(),
       darkTheme: createDarkTheme(),
       routes: {
-        '/gif': (context) => const HomeScreen(initialTab: 0),
-        '/qr': (context) => const HomeScreen(initialTab: 1),
-        '/collection': (context) => const HomeScreen(initialTab: 2),
+        '/gif': (context) => HomeScreen(tabController: createTabController(0)),
+        '/qr': (context) => HomeScreen(tabController: createTabController(1)),
+        '/collection': (context) =>
+            HomeScreen(tabController: createTabController(2)),
       },
+    );
+  }
+
+  TabController createTabController(int initialIndex) {
+    return TabController(
+      length: 3,
+      vsync: const VSync(),
+      initialIndex: initialIndex,
     );
   }
 

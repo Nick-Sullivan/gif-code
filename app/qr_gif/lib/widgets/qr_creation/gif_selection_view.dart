@@ -8,9 +8,14 @@ import 'dart:io';
 
 class GifSelectionView extends StatelessWidget {
   final QrCreationController qrCreationController;
+  final TabController tabController;
   final _formKey = GlobalKey<FormState>();
 
-  GifSelectionView({super.key, required this.qrCreationController});
+  GifSelectionView({
+    super.key,
+    required this.qrCreationController,
+    required this.tabController,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,8 @@ class GifSelectionView extends StatelessWidget {
                     autofocus: true,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: "Search",
+                        labelText: "Search GIPHY",
+                        prefixIcon: Icon(Icons.search),
                         contentPadding: EdgeInsets.all(20.0)),
                     validator: (value) {
                       return null;
@@ -39,19 +45,24 @@ class GifSelectionView extends StatelessWidget {
                 ),
                 if (!Platform.isWindows)
                   Expanded(
-                      child: GiphyGridView(
-                    content: qrCreationController.gifText.isNotEmpty
-                        ? GiphyContentRequest(
-                            mediaType: GiphyMediaType.gif,
-                            requestType: GiphyContentRequestType.search,
-                            searchQuery: qrCreationController.gifText)
-                        : GiphyContentRequest.trending(
-                            mediaType: GiphyMediaType.gif),
-                    onMediaSelect: (GiphyMedia media) {
-                      qrCreationController.setMediaId(media.id);
-                      Navigator.pushReplacementNamed(context, '/qr');
-                    },
-                  ))
+                      child: SingleChildScrollView(
+                          child: SizedBox(
+                              height: 3000,
+                              child: GiphyGridView(
+                                content: qrCreationController.gifText.isNotEmpty
+                                    ? GiphyContentRequest(
+                                        mediaType: GiphyMediaType.gif,
+                                        requestType:
+                                            GiphyContentRequestType.search,
+                                        searchQuery:
+                                            qrCreationController.gifText)
+                                    : GiphyContentRequest.trending(
+                                        mediaType: GiphyMediaType.gif),
+                                onMediaSelect: (GiphyMedia media) {
+                                  qrCreationController.setMediaId(media.id);
+                                  tabController.animateTo(1);
+                                },
+                              )))),
               ],
             ),
           );
