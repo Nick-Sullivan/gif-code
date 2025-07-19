@@ -21,7 +21,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   get_it: ^8.0.2
-  giphy_flutter_sdk: ^1.0.1
+  giphy_flutter_sdk: ^1.0.5
   http: ^1.2.2
   image: ^4.3.0
   path_provider: ^2.1.5

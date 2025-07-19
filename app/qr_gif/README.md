@@ -5,7 +5,7 @@ This is designed to be able to run locally (Using VSCode -> Run), or to deploy a
 1. Create a `.env` file with the following:
 
 ```bash
-# If you change any of these variables, run "./make.ps1 init"
+# If you change any of these variables, run "mise init_infrastructure"
 ENVIRONMENT=dev
 ```
 
@@ -14,13 +14,13 @@ If you want to create a different environment, change `dev` to any unique string
 2. Initialise terraform, this pulls down infrastructure variables like API Gateway URLs.
 
 ```bash
-./make.ps1 init
+mise init
 ```
 
 3. Build
 
 ```bash
-./make.ps1 build
+mise build
 ```
 
 4. Cleanup
