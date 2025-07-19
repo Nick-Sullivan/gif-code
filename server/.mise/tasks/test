@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+#MISE description="Run API tests for the server"
+set -e
+uv run pytest tests/api

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Destroy foundational infrastructure with terraform"
+#MISE wait_for=["destroy_infrastructure"]
+set -e
+cd terraform/foundation
+terraform destroy
+cd ../..

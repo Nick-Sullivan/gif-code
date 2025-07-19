@@ -47,7 +47,7 @@ resource "aws_lambda_function" "create_qr_gif" {
   layers = [
     aws_lambda_layer_version.layer.arn,
     aws_lambda_layer_version.libs.arn,
-    "arn:aws:lambda:ap-southeast-2:770693421928:layer:Klayers-p311-Pillow:3",
+    "arn:aws:lambda:ap-southeast-2:770693421928:layer:Klayers-p311-Pillow:8",
   ]
   role             = aws_iam_role.create_qr_gif.arn
   runtime          = "python3.11"
@@ -62,8 +62,8 @@ resource "aws_lambda_function" "create_qr_gif" {
   environment {
     variables = {
       "ENVIRONMENT" : var.environment,
-      "GIPHY_API_KEY": data.aws_ssm_parameter.giphy_api_key.value,
-      "S3_BUCKET_NAME": data.aws_ssm_parameter.s3_bucket_name.value
+      "GIPHY_API_KEY" : data.aws_ssm_parameter.giphy_api_key.value,
+      "S3_BUCKET_NAME" : data.aws_ssm_parameter.s3_bucket_name.value
     }
   }
 }
@@ -84,6 +84,6 @@ resource "aws_iam_role" "create_qr_gif" {
 }
 
 resource "aws_lambda_function_event_invoke_config" "create_qr_gif" {
-  function_name                = aws_lambda_function.create_qr_gif.function_name
-  maximum_retry_attempts       = 0
+  function_name          = aws_lambda_function.create_qr_gif.function_name
+  maximum_retry_attempts = 0
 }

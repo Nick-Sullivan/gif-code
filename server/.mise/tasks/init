@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#MISE description="Initialise everything"
+#MISE depends=["init_foundation", "init_infrastructure", "init_python"]

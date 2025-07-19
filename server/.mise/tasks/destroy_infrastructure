@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Destroy infrastructure with terraform"
+set -e
+cd terraform/infrastructure
+terraform destroy
+cd ../..

@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#MISE description="Install foundational infrastructure with terraform"
+#MISE alias="if"
+set -e
+environment=$(grep "^ENVIRONMENT=" .env | cut -d'=' -f2)
+giphy_api_key=$(grep "^GIPHY_API_KEY=" .env | cut -d'=' -f2)
+
+if [ -z "$environment" ]; then
+    echo "ENVIRONMENT not found in .env file"
+    exit 1
+fi
+
+if [ -z "$giphy_api_key" ]; then
+    echo "GIPHY_API_KEY not found in .env file"
+    exit 1
+fi
+
+echo "Using environment: $environment"
+
+key="key=gif_code/$environment/foundation/terraform.tfstate"
+echo $key
+
+cd terraform/foundation
+terraform init -backend-config "$key" -reconfigure
+
+cat > terraform.tfvars << EOF
+environment="$environment"
+giphy_api_key="$giphy_api_key"
+EOF
+
+cd ../..

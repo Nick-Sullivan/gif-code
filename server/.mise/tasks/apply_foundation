@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Apply foundational infrastructure with terraform"
+#MISE alias="af"
+set -e
+cd terraform/foundation
+terraform apply
+cd ../..

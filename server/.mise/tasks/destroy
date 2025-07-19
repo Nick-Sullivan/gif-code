@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#MISE description="Destroy everything"
+#MISE depends=["destroy_foundation", "destroy_infrastructure"]

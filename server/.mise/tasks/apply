@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+#MISE description="Apply everything"
+#MISE depends=["apply_foundation", "apply_infrastructure"]

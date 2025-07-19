@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Install dependencies"
+#MISE alias="ip"
+set -e
+uv venv --allow-existing
+uv pip install -r requirements.txt
+
+# Install dependencies to be bundled with the lambda function
+cd lambda/libs
+uv pip install -r requirements.txt --target python
+cd ../..

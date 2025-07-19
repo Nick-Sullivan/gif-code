@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+#MISE description="Install infrastructure with terraform"
+#MISE alias="ii"
+set -e
+environment=$(grep "^ENVIRONMENT=" .env | cut -d'=' -f2)
+
+if [ -z "$environment" ]; then
+    echo "ENVIRONMENT not found in .env file"
+    exit 1
+fi
+
+echo "Using environment: $environment"
+
+key="key=gif_code/$environment/infrastructure/terraform.tfstate"
+echo $key
+
+cd terraform/infrastructure
+terraform init -backend-config "$key" -reconfigure
+
+cat > terraform.tfvars << EOF
+environment="$environment"
+EOF
+
+cd ../..

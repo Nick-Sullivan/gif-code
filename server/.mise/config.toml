@@ -1,0 +1,16 @@
+# Mise is a package manager and makefile.
+# Install mise by following the docs:
+#  https://mise.jdx.dev/getting-started.html
+# 
+#  mise install       - Install packages
+#  mise list          - View installed packages
+#  mise use <package> - Add a new package
+#  mise prune         - Remove unused packages
+#  mise <taskname>    - Run a task
+
+[settings]
+python.uv_venv_auto = true
+
+[tools]
+python = "3.11"
+terraform = "1.12.2"

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Apply infrastructure with terraform"
+#MISE alias="ai"
+#MISE wait_for=["apply_foundation"]
+set -e
+cd terraform/infrastructure
+terraform apply
+cd ../..
