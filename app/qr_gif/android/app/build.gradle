@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "com.example.qr_gif"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 35
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -51,8 +51,8 @@ android {
     defaultConfig {
         applicationId "com.gif_code"
         minSdkVersion 24
-        compileSdkVersion 34
-        targetSdkVersion 34
+        compileSdkVersion 35
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
