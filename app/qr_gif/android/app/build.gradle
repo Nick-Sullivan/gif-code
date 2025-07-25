@@ -54,6 +54,18 @@ android {
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [
+            'android:enableOnBackInvokedCallback': 'true',
+            'applicationName': 'io.flutter.app.FlutterApplication'
+        ]
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
     }
 
     signingConfigs {
@@ -73,6 +85,7 @@ android {
        }
    }
 }
+
 
 flutter {
     source '../..'
