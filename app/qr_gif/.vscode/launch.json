@@ -5,20 +5,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-        "name": "flutter",
-        "request": "launch",
-        "program": "lib/main.dart",
-        "type": "dart",
-        "flutterMode": "debug",
-        "args": ["--web-renderer=html"]
+      "name": "flutter",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "type": "dart",
+      "flutterMode": "debug",
     },
     {
-        "name": "integration tests",
-        "request": "launch",
-        "type": "dart",
-        "toolArgs": [
-            "--dart-define", "IS_TESTING=true"
-        ],
+      "name": "integration tests",
+      "request": "launch",
+      "type": "dart",
+      "toolArgs": [
+        "--dart-define",
+        "IS_TESTING=true"
+      ],
     }
   ]
 }

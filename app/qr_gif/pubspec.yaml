@@ -14,7 +14,7 @@ dependencies:
   amplify_auth_cognito: ^2.5.0
   amplify_flutter: ^2.5.0
   amplify_secure_storage: ^0.5.7
-  flex_color_scheme: ^8.0.0
+  flex_color_scheme: ^8.1.0
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.2.1
