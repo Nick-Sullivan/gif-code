@@ -50,9 +50,8 @@ android {
 
     defaultConfig {
         applicationId "com.gif_code"
-        minSdkVersion 24
-        compileSdkVersion 35
-        targetSdkVersion 35
+        minSdk 24
+        targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
