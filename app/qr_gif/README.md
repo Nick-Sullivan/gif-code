@@ -26,8 +26,7 @@ mise build
 4. Cleanup
 
 ```bash
-cd terraform/infrastructure
-terraform destroy
+mise destroy
 ```
 
 ## Dev notes
