@@ -281,5 +281,5 @@ jobs:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_KEY }}
           packageName: com.gif_code
           releaseFiles: app-release.aab
-          track: production # internal,alpha(closed),beta(open),production
+          tracks: production # internal,alpha(closed),beta(open),production
           status: completed
